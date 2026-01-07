@@ -62,7 +62,6 @@ export default function Home() {
   return (
     <div className="space-y-10">
 
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-primary-light p-6 rounded-2xl">
         {stats.map((item) => (
           <div

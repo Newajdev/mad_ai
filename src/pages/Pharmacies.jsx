@@ -1,5 +1,7 @@
 import React from "react";
 import DataTable, { StatusDropdown } from "../components/TableComp";
+import StatsCom from "../components/StatsCom";
+import SearchCom from "../components/SearchCom";
 
 const Pharmacies = () => {
   const columns = [
@@ -46,13 +48,40 @@ const Pharmacies = () => {
       address: "14/C, Banasree, Dhaka",
       status: "Active",
     },
+    {
+      name: "Zaifa Pharma",
+      website: "www.pharma.com",
+      address: "14/C, Banasree, Dhaka",
+      status: "Active",
+    },
+    {
+      name: "Zaifa Pharma",
+      website: "www.pharma.com",
+      address: "14/C, Banasree, Dhaka",
+      status: "Active",
+    },
+    {
+      name: "Zaifa Pharma",
+      website: "www.pharma.com",
+      address: "14/C, Banasree, Dhaka",
+      status: "Active",
+    },
   ];
 
   return (
-    <div className="p-4">
-      <DataTable columns={columns} data={data} />
-    </div>
-  );
+  <div className="p-4 space-y-8">
+    <StatsCom
+      title="Active Medicines"
+      value={data.length}
+      icon="material-symbols:local-pharmacy-outline"
+    />
+
+    <SearchCom/>
+
+    <DataTable columns={columns} data={data} />
+  </div>
+);
+
 };
 
 export default Pharmacies;

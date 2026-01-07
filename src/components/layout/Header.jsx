@@ -60,7 +60,7 @@ export default function Header({ onMenuClick }) {
       case "/":
         return "Dashboard";
       case "/users":
-        return "Users";
+        return "Users Management";
       case "/medicines":
         return "Medicines";
       case "/doctors":
@@ -140,11 +140,11 @@ export default function Header({ onMenuClick }) {
 
           {/* Redesigned Profile Popup Dropdown */}
           {showProfileModal && (
-            <div className="absolute right-0 mt-4 z-[100] w-[340px] animate-in fade-in slide-in-from-top-4 duration-300">
-              <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
+            <div className="absolute right-0 mt-4 z-100 w-85 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="bg-white rounded-4xl border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
                 {/* Header Section */}
                 <div className="relative h-32 bg-primary">
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-br from-black/10 to-transparent" />
                   <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
                     <div className="relative group">
                       <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
@@ -269,7 +269,7 @@ export default function Header({ onMenuClick }) {
 
       {/* Modern Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[2.5rem] w-full max-w-sm overflow-hidden shadow-2xl p-10 space-y-8 animate-in zoom-in duration-300 relative">
             <div className="flex justify-center">
               <div className="w-20 h-20 bg-primary-light rounded-3xl flex items-center justify-center text-primary animate-bounce">

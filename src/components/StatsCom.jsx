@@ -1,0 +1,32 @@
+import { Icon } from "@iconify/react";
+
+export default function StatsCom({
+  title,
+  value,
+  icon,
+}) {
+  return (
+    <div className="bg-white rounded-xl px-8 py-9 relative flex items-center">
+
+      {/* LEFT: TITLE */}
+      <div className="absolute left-6 h-14 flex items-center justify-center rounded-lg bg-background-main text-primary px-4">
+        <p className="font-bold text-[28px]">
+          {title}
+        </p>
+      </div>
+
+      {/* CENTER: NUMBER */}
+      <div className="mx-auto">
+        <h3 className="text-3xl font-bold text-primary">
+          {value ?? "--"}
+        </h3>
+      </div>
+
+      {/* RIGHT: ICON */}
+      <div className="absolute right-6 h-15 w-17 flex items-center justify-center rounded-lg bg-background-main text-primary">
+        <Icon icon={icon} width="45" height="45" />
+      </div>
+
+    </div>
+  );
+}

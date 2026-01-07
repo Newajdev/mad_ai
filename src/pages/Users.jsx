@@ -1,5 +1,7 @@
-import React from "react";
+
 import DataTable from "../components/TableComp";
+import StatsCom from "../components/StatsCom";
+import SearchCom from "../components/SearchCom";
 
 const Users = () => {
   const columns = [
@@ -8,7 +10,7 @@ const Users = () => {
       key: "name",
       render: (name, row) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 shrink-0">
             <img src={row.avatar} alt={name} className="w-full h-full object-cover" />
           </div>
           <span>{name}</span>
@@ -64,23 +66,23 @@ const Users = () => {
       diseases: "coronary, Di...",
       medication: 4,
     },
-    {
-      name: "John Miller",
-      avatar: "https://randomuser.me/api/portraits/men/5.jpg",
-      email: "abcd******@gmail.com",
-      phone: "+123456789",
-      address: "20 Cooper Sq...",
-      age: 45,
-      diseases: "coronary, Di...",
-      medication: 3,
-    },
+    
+  
   ];
 
   return (
-    <div className="p-4">
-      <DataTable columns={columns} data={data} />
-    </div>
-  );
+  <div className="p-4 space-y-8">
+    <StatsCom
+      title="Total Users"
+      value={data.length}
+      icon="material-symbols:group-outline"
+    />
+
+    <SearchCom />
+
+    <DataTable columns={columns} data={data} />
+  </div>
+);
 };
 
 export default Users;
