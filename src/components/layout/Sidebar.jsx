@@ -43,15 +43,14 @@ export default function Sidebar({ isOpen, onClose }) {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 border-r border-sidebar-border ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 border-r border-sidebar-border ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex h-full flex-col">
           {/* Company Logo */}
           <div className="flex flex-col items-center justify-center py-6 px-6 ">
             <Link to="/" className="flex flex-col items-center gap-2">
-              <img className="w-1/2" src="logo.png" alt="Mad AI Company Logo" />
+              <img className="w-1/2" src="/logo.png" alt="Mad AI Company Logo" />
             </Link>
           </div>
 
@@ -65,10 +64,9 @@ export default function Sidebar({ isOpen, onClose }) {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
-                      isActive
-                        ? "bg-primary text-white shadow-lg shadow-primary/20"
-                        : "text-text-muted hover:bg-primary-light hover:text-primary"
+                    `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${isActive
+                      ? "bg-primary text-white shadow-lg shadow-primary/20"
+                      : "text-text-muted hover:bg-primary-light hover:text-primary"
                     }`
                   }
                   onClick={() => {
@@ -89,10 +87,9 @@ export default function Sidebar({ isOpen, onClose }) {
             <NavLink
               to="/settings"
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
-                  isActive
-                    ? "bg-primary text-white"
-                    : "text-text-muted hover:bg-primary-light hover:text-primary"
+                `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${isActive
+                  ? "bg-primary text-white"
+                  : "text-text-muted hover:bg-primary-light hover:text-primary"
                 }`
               }
             >
