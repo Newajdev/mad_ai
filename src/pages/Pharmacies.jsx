@@ -3,7 +3,7 @@ import DataTable, { StatusDropdown } from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 
-/* 🔹 INLINE DYNAMIC OVERLAY (DUMMY) */
+
 const DynamicFormOverlay = ({ open, anchorRef, onClose, title }) => {
   const overlayRef = useRef(null);
 
@@ -13,10 +13,9 @@ const DynamicFormOverlay = ({ open, anchorRef, onClose, title }) => {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* transparent overlay */}
+
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* form card */}
       <div
         ref={overlayRef}
         className="absolute bg-white rounded-xl shadow-xl px-8 py-8 w-[420px]"
@@ -36,10 +35,8 @@ const DynamicFormOverlay = ({ open, anchorRef, onClose, title }) => {
           </button>
         </div>
 
-        {/* dummy form */}
         <form className="space-y-4">
 
-        {/* Pharmacy Name */}
         <div className="space-y-1">
           <label className="text-sm font-medium text-gray-700">
             Pharmacy Name
@@ -167,7 +164,6 @@ const Pharmacies = () => {
 
       <DataTable columns={columns} data={data} />
 
-      {/* 🔥 DYNAMIC OVERLAY FORM */}
       <DynamicFormOverlay
         open={open}
         anchorRef={addBtnRef}

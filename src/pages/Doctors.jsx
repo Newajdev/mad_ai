@@ -3,7 +3,6 @@ import DataTable, { StatusDropdown } from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 
-/* 🔹 INLINE OVERLAY FORM (DUMMY) */
 const DoctorFormOverlay = ({ open, anchorRef, onClose }) => {
   if (!open || !anchorRef?.current) return null;
 
@@ -11,10 +10,9 @@ const DoctorFormOverlay = ({ open, anchorRef, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* transparent overlay */}
+
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* form card */}
       <div
         className="absolute bg-white rounded-xl shadow-xl p-6 w-[420px]"
         style={{
@@ -33,9 +31,8 @@ const DoctorFormOverlay = ({ open, anchorRef, onClose }) => {
           </button>
         </div>
 
-        {/* dummy form */}
-        <form className="space-y-4">
 
+        <form className="space-y-4">
           <div className="space-y-1">
             <label className="text-sm font-medium">Doctor Name</label>
             <input
@@ -176,7 +173,6 @@ const Doctors = () => {
 
       <DataTable columns={columns} data={data} />
 
-      {/* 🔥 OVERLAY FORM */}
       <DoctorFormOverlay
         open={open}
         anchorRef={addBtnRef}

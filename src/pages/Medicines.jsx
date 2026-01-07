@@ -3,7 +3,6 @@ import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 import RowCard from "../components/RowCard";
 
-/* 🔹 INLINE OVERLAY FORM (DUMMY) */
 const MedicineFormOverlay = ({ open, anchorRef, onClose }) => {
   if (!open || !anchorRef?.current) return null;
 
@@ -11,10 +10,9 @@ const MedicineFormOverlay = ({ open, anchorRef, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* transparent overlay */}
+
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* form card */}
       <div
         className="absolute bg-white rounded-xl shadow-xl p-6 w-[420px]"
         style={{
@@ -33,7 +31,6 @@ const MedicineFormOverlay = ({ open, anchorRef, onClose }) => {
           </button>
         </div>
 
-        {/* dummy form */}
         <form className="space-y-4">
 
           <div className="space-y-1">
@@ -171,7 +168,6 @@ const Medicines = () => {
         )}
       </div>
 
-      {/* 🔥 OVERLAY FORM */}
       <MedicineFormOverlay
         open={open}
         anchorRef={addBtnRef}
