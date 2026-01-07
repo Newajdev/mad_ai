@@ -62,11 +62,11 @@ export default function Header({ onMenuClick }) {
       case "/users":
         return "Users Management";
       case "/medicines":
-        return "Medicines";
+        return "Medicines Management";
       case "/doctors":
-        return "Doctors";
+        return "Doctors Management";
       case "/pharmacies":
-        return "Pharmacies";
+        return "Pharmacy Management";
       case "/refill-requests":
         return "Refill Requests";
       case "/notifications":

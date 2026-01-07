@@ -10,32 +10,42 @@ const RefillRequest = () => {
     {
       email: "abcd@gmail.com",
       medicines: [
-        "Biscor Tablet 2.5mg",
-        "Napa extra 500mg",
+        "Histacin Tablet 2.5mg",
+        "Napa 500mg",
         "Fexo…",
       ],
       address: "20 Cooper Square, New York,\nNY 10003, USA",
       quantity: 10,
     },
     {
-      email: "abcd@gmail.com",
+      email: "efgh@gmail.com",
       medicines: [
         "Biscor Tablet 2.5mg",
         "Napa extra 500mg",
         "Fexo…",
       ],
-      address: "20 Cooper Square, New York,\nNY 10003, USA",
-      quantity: 10,
+      address: "20 Cooper Square, New York,\nNY 75503, Lowa",
+      quantity: 20,
     },
     {
-      email: "abcd@gmail.com",
+      email: "ijkl@gmail.com",
       medicines: [
         "Biscor Tablet 2.5mg",
         "Napa extra 500mg",
         "Fexo…",
       ],
-      address: "20 Cooper Square, New York,\nNY 10003, USA",
-      quantity: 10,
+      address: "20 Cooper Square, New York,\nNY 56003, Uk",
+      quantity: 30,
+    },
+    {
+      email: "mnop@gmail.com",
+      medicines: [
+        "Biscor Tablet 2.5mg",
+        "Napa extra 500mg",
+        "Fexo…",
+      ],
+      address: "20 Cooper Square, New York,\nNY 89003, Brazil",
+      quantity: 80,
     },
   ];
 

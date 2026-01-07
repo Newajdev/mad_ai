@@ -6,11 +6,11 @@ export default function StatsCom({
   icon,
 }) {
   return (
-    <div className="bg-white rounded-xl px-8 py-9 relative flex items-center">
+    <div className="bg-white rounded-xl px-6 py-6 relative flex items-center">
 
       {/* LEFT: TITLE */}
-      <div className="absolute left-6 h-14 flex items-center justify-center rounded-lg bg-background-main text-primary px-4">
-        <p className="font-bold text-[28px]">
+      <div className="absolute left-6 h-12 flex items-center justify-center rounded-lg bg-background-main text-primary px-4">
+        <p className="font-bold text-[25px]">
           {title}
         </p>
       </div>
@@ -23,8 +23,8 @@ export default function StatsCom({
       </div>
 
       {/* RIGHT: ICON */}
-      <div className="absolute right-6 h-15 w-17 flex items-center justify-center rounded-lg bg-background-main text-primary">
-        <Icon icon={icon} width="45" height="45" />
+      <div className="absolute right-6 h-12 w-14 flex items-center justify-center rounded-lg bg-background-main text-primary">
+        <Icon icon={icon} width="40" height="40" />
       </div>
 
     </div>

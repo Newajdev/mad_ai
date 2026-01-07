@@ -1,18 +1,19 @@
 import { Icon } from "@iconify/react";
+import ActionButton from "./ActionButton";
 
 export default function SearchCom({
   search,
   setSearch,
   onFilterClick,
-  onAddClick,
-  addLabel,
+  onAddClick,   // 🔹 dummy click
+  addLabel = "Add",
   buttonRef,
 }) {
   return (
-    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+    <div className="bg-white rounded-xl px-6 py-6 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
 
       {/* SEARCH */}
-      <div className="flex items-center gap-2 bg-background-main px-4 py-3 rounded-lg flex-1">
+      <div className="flex items-center gap-2 bg-background-main px-4 py-1 rounded-lg flex-1">
         <Icon
           icon="material-symbols:search-rounded"
           width="28"
@@ -43,15 +44,13 @@ export default function SearchCom({
           Filter
         </button>
 
-        {/* ADD BUTTON */}
+        {/* ADD BUTTON (DUMMY) */}
         {onAddClick && (
-          <button
-            ref={buttonRef}
+          <ActionButton
+            label={addLabel}
             onClick={onAddClick}
-            className="px-6 py-3 bg-primary text-white rounded-lg font-semibold whitespace-nowrap"
-          >
-            {addLabel}
-          </button>
+            buttonRef={buttonRef}
+          />
         )}
 
       </div>
