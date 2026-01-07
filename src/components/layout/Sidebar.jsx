@@ -84,22 +84,6 @@ export default function Sidebar({ isOpen, onClose }) {
 
           {/* Bottom Actions */}
           <div className="p-4 space-y-1">
-            <NavLink
-              to="/settings"
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${isActive
-                  ? "bg-primary text-white"
-                  : "text-text-muted hover:bg-primary-light hover:text-primary"
-                }`
-              }
-            >
-              <Icon
-                icon="material-symbols:settings-outline-rounded"
-                width="22"
-                height="22"
-              />
-              Settings
-            </NavLink>
             <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold text-text-muted transition-all hover:bg-primary-light hover:text-primary">
               <Icon
                 icon="material-symbols:logout-rounded"
