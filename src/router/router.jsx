@@ -8,12 +8,9 @@ import VerifyOTP from "../pages/Auth/VerifyOTP";
 import PasswordChanged from "../pages/Auth/PasswordChanged";
 
 import Users from "../pages/Users";
-import Medicines from "../pages/Medicines";
 import Doctors from "../pages/Doctors";
 import Pharmacies from "../pages/Pharmacies";
-import RefillRequest from "../pages/RefillRequest";
 import Notifications from "../pages/Notifications";
-import Settings from "../pages/Settings";
 
 const router = createBrowserRouter([
   {
@@ -29,10 +26,6 @@ const router = createBrowserRouter([
         element: <Users />,
       },
       {
-        path: "/medicines",
-        element: <Medicines />,
-      },
-      {
         path: "/doctors",
         element: <Doctors />,
       },
@@ -41,16 +34,8 @@ const router = createBrowserRouter([
         element: <Pharmacies />,
       },
       {
-        path: "/refill-requests",
-        element: <RefillRequest />,
-      },
-      {
         path: "/notifications",
         element: <Notifications />,
-      },
-      {
-        path: "/settings",
-        element: <Settings />,
       },
     ],
   },

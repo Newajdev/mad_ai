@@ -6,7 +6,6 @@ import SearchCom from "../components/SearchCom";
 const Doctors = () => {
   const columns = [
     { header: "Doctor name", key: "name" },
-    { header: "Email", key: "email" },
     { header: "Specialization", key: "specialization" },
     { header: "Gender", key: "gender" },
     { header: "Hospital", key: "hospital" },
@@ -20,7 +19,6 @@ const Doctors = () => {
   const data = [
     {
       name: "Dr. Roy",
-      email: "abc@gmail.com",
       specialization: "Cardiologist",
       gender: "Male",
       hospital: "Lab Aid Hospital",
@@ -28,7 +26,6 @@ const Doctors = () => {
     },
     {
       name: "Dr. Sawly",
-      email: "abc@gmail.com",
       specialization: "Neurologist",
       gender: "Female",
       hospital: "Islami Bank Hospital",
@@ -36,7 +33,6 @@ const Doctors = () => {
     },
     {
       name: "Dr. Dina",
-      email: "abc@gmail.com",
       specialization: "Psychiatrist",
       gender: "Female",
       hospital: "Farazi Hospital",
@@ -44,7 +40,6 @@ const Doctors = () => {
     },
     {
       name: "Dr. Hasan",
-      email: "abc@gmail.com",
       specialization: "Oncologist",
       gender: "Male",
       hospital: "Islami Bank Hospital",

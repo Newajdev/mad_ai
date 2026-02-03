@@ -1,7 +1,9 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
 export default function Sidebar({ isOpen, onClose }) {
+  const navigate = useNavigate();
+
   const navLinks = [
     {
       name: "Dashboards",
@@ -9,11 +11,6 @@ export default function Sidebar({ isOpen, onClose }) {
       icon: "material-symbols:dashboard-outline",
     },
     { name: "Users", path: "/users", icon: "material-symbols:group-outline" },
-    {
-      name: "Medicines",
-      path: "/medicines",
-      icon: "material-symbols:medication-outline",
-    },
     {
       name: "Doctors",
       path: "/doctors",
@@ -25,66 +22,90 @@ export default function Sidebar({ isOpen, onClose }) {
       icon: "material-symbols:local-pharmacy-outline",
     },
     {
-      name: "Refill request",
-      path: "/refill-requests",
-      icon: "material-symbols:sync-alt",
+      name: "Notifications",
+      path: "/notifications",
+      icon: "material-symbols:notifications-outline-rounded",
     },
   ];
+
+  const handleLogout = () => {
+    // 🔹 clear auth data (if any)
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // 🔹 close sidebar on mobile
+    if (window.innerWidth < 768) {
+      onClose?.();
+    }
+
+    // 🔹 redirect to login
+    navigate("/login", { replace: true });
+  };
 
   return (
     <>
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm transition-opacity md:hidden"
+          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white transition-transform duration-300 ease-in-out md:static md:translate-x-0 border-r border-sidebar-border ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-sidebar-border
+        transform transition-transform duration-300 ease-in-out
+        md:static md:translate-x-0
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex h-full flex-col">
-          {/* Company Logo */}
-          <div className="flex flex-col items-center justify-center py-6 px-6 ">
-            <Link to="/" className="flex flex-col items-center gap-2">
-              <img className="w-1/2" src="/logo.png" alt="Mad AI Company Logo" />
+          {/* Logo */}
+          <div className="flex justify-center py-8 px-8">
+            <Link to="/" className="flex justify-center cursor-pointer">
+              <img
+                src="/logo.png"
+                alt="Mad AI Logo"
+                className="w-1/2 scale-[1.6] hover:opacity-90 transition"
+              />
             </Link>
           </div>
 
           <div className="h-1 bg-sidebar-border mx-6 mb-6" />
 
-          {/* Navigation Links */}
-          <nav className="flex-1 space-y-1 overflow-y-auto px-4">
-            {navLinks.map((item) => {
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${isActive
+          {/* Nav */}
+          <nav className="flex-1 space-y-3 overflow-y-auto px-4">
+            {navLinks.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-4 py-4 text-lg font-semibold transition-all
+                  ${
+                    isActive
                       ? "bg-primary text-white shadow-lg shadow-primary/20"
                       : "text-text-muted hover:bg-primary-light hover:text-primary"
-                    }`
-                  }
-                  onClick={() => {
-                    if (window.innerWidth < 768) {
-                      onClose();
-                    }
-                  }}
-                >
-                  <Icon icon={item.icon} width="22" height="22" />
-                  {item.name}
-                </NavLink>
-              );
-            })}
+                  }`
+                }
+                onClick={() => {
+                  if (window.innerWidth < 768) onClose?.();
+                }}
+              >
+                <Icon icon={item.icon} width="22" height="22" />
+                {item.name}
+              </NavLink>
+            ))}
           </nav>
 
-          {/* Bottom Actions */}
-          <div className="p-4 space-y-1">
-            <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold text-text-muted transition-all hover:bg-primary-light hover:text-primary">
+          {/* Logout */}
+          <div className="p-4">
+            <div className="h-0.5 bg-sidebar-border" />
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-lg px-4 py-4
+              text-lg font-semibold text-red-400 transition-all
+              hover:bg-red-50 hover:text-red-600 cursor-pointer"
+            >
               <Icon
                 icon="material-symbols:logout-rounded"
                 width="22"

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, CheckCircle } from "lucide-react";
+import BackNextButtons from "../../components/BackNextButtons";
 
-export default function PasswordChanged() {
+export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -51,7 +52,8 @@ export default function PasswordChanged() {
             Set a new password
           </h2>
           <p className="text-center text-md text-gray-700 mb-6">
-            Create a new password. Ensure it differs from previous ones for security
+            Create a new password. Ensure it differs from previous ones for
+            security
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -94,13 +96,19 @@ export default function PasswordChanged() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+              <p className="text-red-500 text-sm text-center font-medium">
+                {error}
+              </p>
             )}
 
             <button
@@ -109,6 +117,12 @@ export default function PasswordChanged() {
             >
               Reset Password
             </button>
+
+            <BackNextButtons
+              backLabel="Back"
+              onBack={() => navigate("/verify-otp")}
+              showNext={false}
+            />
           </form>
         </div>
       </div>
@@ -133,9 +147,14 @@ export default function PasswordChanged() {
             </p>
 
             <div className="w-full bg-primary h-1 rounded-full overflow-hidden">
-              <div className="h-full bg-white/30 animate-progress" style={{ width: '100%' }}></div>
+              <div
+                className="h-full bg-white/30 animate-progress"
+                style={{ width: "100%" }}
+              ></div>
             </div>
-            <p className="text-xs text-gray-400 mt-4">Redirecting to login...</p>
+            <p className="text-xs text-gray-400 mt-4">
+              Redirecting to login...
+            </p>
           </div>
         </div>
       )}

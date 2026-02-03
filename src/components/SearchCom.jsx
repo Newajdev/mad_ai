@@ -1,15 +1,18 @@
 import { Icon } from "@iconify/react";
+import GenderFilter from "../components/GenderFilter";
 
 export default function SearchCom({
   search,
   setSearch,
-  onFilterClick,
+  gender,
+  setGender,
   onAddClick,
   addLabel,
   buttonRef,
 }) {
   return (
-    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between relative z-40 pointer-events-auto overflow-visible">
+
 
       {/* SEARCH */}
       <div className="flex items-center gap-2 bg-background-main px-4 py-3 rounded-lg flex-1">
@@ -22,7 +25,7 @@ export default function SearchCom({
           type="text"
           placeholder="Search"
           value={search}
-          onChange={(e) => setSearch?.(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           className="bg-transparent outline-none text-sm w-full"
         />
       </div>
@@ -30,18 +33,8 @@ export default function SearchCom({
       {/* RIGHT ACTIONS */}
       <div className="flex items-center gap-4">
 
-        {/* FILTER */}
-        <button
-          onClick={onFilterClick}
-          className="flex items-center gap-2 text-primary font-semibold px-4 py-2 rounded-lg hover:bg-primary-light transition"
-        >
-          <Icon
-            icon="material-symbols:filter-list-rounded"
-            width="26"
-            height="26"
-          />
-          Filter
-        </button>
+        {/* GENDER FILTER */}
+        <GenderFilter value={gender} onChange={setGender} />
 
         {/* ADD BUTTON */}
         {onAddClick && (
@@ -53,7 +46,6 @@ export default function SearchCom({
             {addLabel}
           </button>
         )}
-
       </div>
     </div>
   );

@@ -18,7 +18,6 @@ const Users = () => {
       ),
     },
     { header: "Email", key: "email" },
-    { header: "Phone", key: "phone" },
     { header: "Address", key: "address" },
     { header: "Age", key: "age" },
     { header: "Diseases", key: "diseases" },
@@ -29,8 +28,7 @@ const Users = () => {
     {
       name: "John Miller",
       avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      email: "abcd******@gmail.com",
-      phone: "+123456789",
+      email: "abcd***@gmail.com",
       address: "20 Cooper Sq...",
       age: 40,
       diseases: "coronary, Di...",
@@ -39,8 +37,7 @@ const Users = () => {
     {
       name: "John Miller",
       avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-      email: "abcd******@gmail.com",
-      phone: "+123456789",
+      email: "abcd***@gmail.com",
       address: "20 Cooper Sq...",
       age: 41,
       diseases: "coronary, Di...",
@@ -49,8 +46,7 @@ const Users = () => {
     {
       name: "John Miller",
       avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-      email: "abcd******@gmail.com",
-      phone: "+123456789",
+      email: "abcd***@gmail.com",
       address: "20 Cooper Sq...",
       age: 50,
       diseases: "coronary, Di...",
@@ -59,8 +55,7 @@ const Users = () => {
     {
       name: "John Miller",
       avatar: "https://randomuser.me/api/portraits/men/4.jpg",
-      email: "abcd******@gmail.com",
-      phone: "+123456789",
+      email: "abcd***@gmail.com",
       address: "20 Cooper Sq...",
       age: 52,
       diseases: "coronary, Di...",

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import BackNextButtons from "../../components/BackNextButtons";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -45,6 +46,13 @@ export default function ForgotPassword() {
             >
               Continue
             </button>
+
+            <BackNextButtons
+              backLabel="Back"
+              nextLabel="Next"
+              onBack={() => navigate("/login")}
+              onNext={() => navigate("/verify-otp")}
+            />
           </form>
         </div>
       </div>

@@ -58,21 +58,15 @@ export default function Header({ onMenuClick }) {
   const getTitle = (path) => {
     switch (path) {
       case "/":
-        return "Dashboard";
+        return "Dashboard Overview";
       case "/users":
         return "Users Management";
-      case "/medicines":
-        return "Medicines";
       case "/doctors":
-        return "Doctors";
+        return "Doctors Management";
       case "/pharmacies":
-        return "Pharmacies";
-      case "/refill-requests":
-        return "Refill Requests";
+        return "Pharmacies Management";
       case "/notifications":
-        return "Notifications";
-      case "/settings":
-        return "Settings";
+        return "Notifications Management";
       default: {
         const cleanPath = path.split("/").filter(Boolean)[0];
         return cleanPath
@@ -104,7 +98,7 @@ export default function Header({ onMenuClick }) {
       {/* Right Side Actions */}
       <div className="flex items-center gap-6">
         <Link to="/notifications">
-          <button className="relative rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+          <button className="relative rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm cursor-pointer">
             <Icon
               icon="material-symbols:notifications-outline-rounded"
               width="24"
@@ -171,7 +165,7 @@ export default function Header({ onMenuClick }) {
                   </div>
                   <button
                     onClick={() => setShowProfileModal(false)}
-                    className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-all blur-0 backdrop-blur-md"
+                    className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-all blur-0 backdrop-blur-md cursor-pointer"
                   >
                     <Icon icon="material-symbols:close-rounded" width="20" />
                   </button>
@@ -250,7 +244,7 @@ export default function Header({ onMenuClick }) {
                     <button
                       onClick={() => setShowConfirmModal(true)}
                       disabled={isSaving}
-                      className="w-full bg-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 group"
+                      className="w-full bg-primary text-white py-4 rounded-2xl cursor-pointer font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 group"
                     >
                       {isSaving ? (
                         <Icon icon="line-md:loading-twotone-loop" width="18" />
