@@ -92,6 +92,7 @@ const Doctors = () => {
 
   const columns = [
     { header: "Doctor name", key: "name" },
+    { header: "Email", key: "email" },
     { header: "Specialization", key: "specialization" },
     { header: "Gender", key: "gender" },
     { header: "Hospital", key: "hospital" },
@@ -105,6 +106,7 @@ const Doctors = () => {
   const data = [
     {
       name: "Dr. Roy",
+      email: "dr.roy@example.com",
       specialization: "Cardiologist",
       gender: "Male",
       hospital: "Lab Aid Hospital",
@@ -112,6 +114,7 @@ const Doctors = () => {
     },
     {
       name: "Dr. Sawly",
+      email: "dr.sawly@example.com",
       specialization: "Neurologist",
       gender: "Female",
       hospital: "Islami Bank Hospital",
@@ -119,6 +122,7 @@ const Doctors = () => {
     },
     {
       name: "Dr. Dina",
+      email: "dr.dina@example.com",
       specialization: "Psychiatrist",
       gender: "Female",
       hospital: "Farazi Hospital",
@@ -126,6 +130,7 @@ const Doctors = () => {
     },
     {
       name: "Dr. Hasan",
+      email: "dr.hasan@example.com",
       specialization: "Oncologist",
       gender: "Male",
       hospital: "Islami Bank Hospital",
