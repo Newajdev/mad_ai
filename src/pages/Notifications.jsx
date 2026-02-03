@@ -1,8 +1,5 @@
-import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
 
 export default function Notifications() {
-  const navigate = useNavigate();
 
   const notifications = [
     {

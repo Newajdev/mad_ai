@@ -14,8 +14,7 @@ export default function SearchCom({
     <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between relative z-40 pointer-events-auto overflow-visible">
 
 
-      {/* SEARCH */}
-      <div className="flex items-center gap-2 bg-background-main px-4 py-3 rounded-lg flex-1">
+      <div className="flex items-center gap-2 bg-background-main px-4 py-1 rounded-lg flex-1">
         <Icon
           icon="material-symbols:search-rounded"
           width="28"
@@ -30,21 +29,17 @@ export default function SearchCom({
         />
       </div>
 
-      {/* RIGHT ACTIONS */}
       <div className="flex items-center gap-4">
 
         {/* GENDER FILTER */}
         <GenderFilter value={gender} onChange={setGender} />
 
-        {/* ADD BUTTON */}
         {onAddClick && (
-          <button
-            ref={buttonRef}
+          <ActionButton
+            label={addLabel}
             onClick={onAddClick}
-            className="px-6 py-3 bg-primary text-white rounded-lg font-semibold whitespace-nowrap"
-          >
-            {addLabel}
-          </button>
+            buttonRef={buttonRef}
+          />
         )}
       </div>
     </div>
