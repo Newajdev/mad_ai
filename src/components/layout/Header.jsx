@@ -4,10 +4,24 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Header({ onMenuClick }) {
   const location = useLocation();
+
+  /* ================= RESPONSIVE TITLE STATE ================= */
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  /* ========================================================== */
+
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -34,20 +48,19 @@ export default function Header({ onMenuClick }) {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileData((prev) => ({ ...prev, profileImage: imageUrl }));
-    }
+    if (!file) return;
+    const imageUrl = URL.createObjectURL(file);
+    setProfileData((prev) => ({ ...prev, profileImage: imageUrl }));
   };
 
   const handleSave = () => {
     setIsSaving(true);
-    // Simulate API call
     setTimeout(() => {
       setIsSaving(false);
       setShowConfirmModal(false);
@@ -55,54 +68,60 @@ export default function Header({ onMenuClick }) {
     }, 1500);
   };
 
+  /* ================= RESPONSIVE getTitle ================= */
   const getTitle = (path) => {
     switch (path) {
       case "/":
-        return "Dashboard Overview";
+        return isMobile ? "Dashboard" : "Dashboard Overview";
       case "/users":
-        return "Users Management";
+        return isMobile ? "Users" : "Users Management";
       case "/doctors":
-        return "Doctors Management";
+        return isMobile ? "Doctors" : "Doctors Management";
       case "/pharmacies":
-        return "Pharmacies Management";
+        return isMobile ? "Pharmacies" : "Pharmacies Management";
       case "/notifications":
-        return "Notifications Management";
+        return isMobile ? "Notifications" : "Notifications Management";
       default: {
         const cleanPath = path.split("/").filter(Boolean)[0];
         return cleanPath
           ? cleanPath.charAt(0).toUpperCase() +
-          cleanPath.slice(1).replace("-", " ")
+              cleanPath.slice(1).replace("-", " ")
           : "Dashboard";
       }
     }
   };
+  /* ======================================================== */
 
   const title = getTitle(location.pathname);
 
   return (
     <header className="sticky top-0 z-10 flex h-24 w-full items-center justify-between bg-transparent px-8 text-text-main">
-      <div className="flex items-center gap-4">
-        {/* Mobile Menu Button */}
+      <div className="flex items-center gap-4 min-w-0">
+        {/* Mobile Menu */}
         <button
           onClick={onMenuClick}
           className="rounded-md p-2 hover:bg-primary-light text-primary md:hidden"
         >
-          <Icon icon="material-symbols:menu-rounded" width="28" height="28" />
+          <Icon icon="material-symbols:menu-rounded" width="28" />
         </button>
 
-        <div className="hidden md:block">
-          <h1 className="text-4xl font-bold text-primary mb-1">{title}</h1>
-        </div>
+        {/* TITLE */}
+        <h1
+          className={`font-bold text-primary truncate ${
+            isMobile ? "text-lg max-w-[200px]" : "text-4xl"
+          }`}
+        >
+          {title}
+        </h1>
       </div>
 
-      {/* Right Side Actions */}
+      {/* RIGHT SIDE */}
       <div className="flex items-center gap-6">
         <Link to="/notifications">
-          <button className="relative rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm cursor-pointer">
+          <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
             <Icon
               icon="material-symbols:notifications-outline-rounded"
               width="24"
-              height="24"
             />
             <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
           </button>
@@ -280,13 +299,13 @@ export default function Header({ onMenuClick }) {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 bg-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all disabled:opacity-50"
+                className="cursor-pointer flex-1 bg-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all disabled:opacity-50"
               >
                 {isSaving ? "Updating..." : "Yes, Save"}
               </button>
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="flex-1 bg-gray-50 text-gray-400 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all"
+                className="cursor-pointer flex-1 bg-gray-50 text-gray-400 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all"
               >
                 No
               </button>

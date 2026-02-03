@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import GenderFilter from "../components/GenderFilter";
+import ActionButton from "../components/ActionButton"; // ✅ IMPORT
 
 export default function SearchCom({
   search,
@@ -11,15 +12,9 @@ export default function SearchCom({
   buttonRef,
 }) {
   return (
-    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between relative z-40 pointer-events-auto overflow-visible">
-
-
+    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
       <div className="flex items-center gap-2 bg-background-main px-4 py-1 rounded-lg flex-1">
-        <Icon
-          icon="material-symbols:search-rounded"
-          width="28"
-          height="28"
-        />
+        <Icon icon="material-symbols:search-rounded" width="28" height="28" />
         <input
           type="text"
           placeholder="Search"
@@ -30,8 +25,6 @@ export default function SearchCom({
       </div>
 
       <div className="flex items-center gap-4">
-
-        {/* GENDER FILTER */}
         <GenderFilter value={gender} onChange={setGender} />
 
         {onAddClick && (

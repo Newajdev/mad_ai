@@ -113,11 +113,6 @@ export function StatusDropdown({ value: initialValue }) {
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (option) => {
-    setSelectedValue(option);
-    setIsOpen(false);
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Active":
@@ -134,7 +129,7 @@ export function StatusDropdown({ value: initialValue }) {
   };
 
   return (
-    <div className="relative inline-block z-20" ref={dropdownRef}>
+    <div className="relative inline-block" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((p) => !p)}
         className="flex items-center gap-2 cursor-pointer
@@ -152,14 +147,15 @@ export function StatusDropdown({ value: initialValue }) {
       </div>
 
       {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-40 bg-white border
-          border-gray-200 rounded-lg shadow-lg z-[100] py-1"
-        >
+        <div className="absolute right-0 mt-2 w-40 bg-white border
+        border-gray-200 rounded-lg shadow-lg z-30 py-1">
           {options.map((option) => (
             <button
               key={option}
-              onClick={() => handleSelect(option)}
+              onClick={() => {
+                setSelectedValue(option);
+                setIsOpen(false);
+              }}
               className={`w-full text-left px-4 py-2 text-sm transition
                 ${
                   selectedValue === option
@@ -175,3 +171,4 @@ export function StatusDropdown({ value: initialValue }) {
     </div>
   );
 }
+
