@@ -15,17 +15,17 @@ const stats = [
     title: "Total Users",
     value: 1234,
     icon: "material-symbols:group-outline",
-  },
-  {
-    title: "Active Medicines",
-    value: 123,
-    icon: "material-symbols:medication-outline",
-  },
-  {
-    title: "Refill requests",
-    value: 56,
-    icon: "material-symbols:sync-alt",
-  },
+  }
+  // {
+  //   title: "Active Medicines",
+  //   value: 123,
+  //   icon: "material-symbols:medication-outline",
+  // },
+  // {
+  //   title: "Refill requests",
+  //   value: 56,
+  //   icon: "material-symbols:sync-alt",
+  // },
 ];
 
 const userGrowthData = [
