@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import GenderFilter from "../components/GenderFilter";
-import ActionButton from "../components/ActionButton"; // ✅ IMPORT
+import ActionButton from "../components/ActionButton";
 
 export default function SearchCom({
   search,
@@ -12,8 +12,8 @@ export default function SearchCom({
   buttonRef,
 }) {
   return (
-    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-      <div className="flex items-center gap-2 bg-background-main px-4 py-1 rounded-lg flex-1">
+    <div className="bg-white rounded-xl px-7 py-7 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between shadow">
+      <div className="flex items-center gap-2 bg-background-main px-4 py-2 rounded-lg flex-1 shadow">
         <Icon icon="material-symbols:search-rounded" width="28" height="28" />
         <input
           type="text"

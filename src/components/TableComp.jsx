@@ -148,7 +148,7 @@ export function StatusDropdown({ value: initialValue }) {
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border
-        border-gray-200 rounded-lg shadow-lg z-30 py-1">
+        border-gray-200 rounded-lg shadow-dm z-30 py-1">
           {options.map((option) => (
             <button
               key={option}
@@ -159,7 +159,7 @@ export function StatusDropdown({ value: initialValue }) {
               className={`w-full text-left px-4 py-2 text-sm transition
                 ${
                   selectedValue === option
-                    ? "bg-primary-light text-primary font-bold"
+                    ? "bg-primary-light text-primary font-semibold"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
             >

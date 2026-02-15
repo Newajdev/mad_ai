@@ -15,20 +15,8 @@ createRoot(document.getElementById("root")).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          {/* ✅ Toast Container */}
-          <Toaster
-            position="top-right"
-            reverseOrder={false}
-            toastOptions={{
-              style: {
-                borderRadius: "12px",
-                background: "#1E293B",
-                color: "#fff",
-              },
-            }}
-          />
-          
           <RouterProvider router={router} />
+          <Toaster/>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>

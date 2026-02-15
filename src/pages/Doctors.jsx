@@ -1,94 +1,73 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DataTable, { StatusDropdown } from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
+import toast from "react-hot-toast";
 
-const DoctorFormOverlay = ({ open, anchorRef, onClose }) => {
-  if (!open || !anchorRef?.current) return null;
-
-  const rect = anchorRef.current.getBoundingClientRect();
-
-  return (
-    <div className="fixed inset-0 z-50">
-
-      <div className="absolute inset-0" onClick={onClose} />
-
-      <div
-        className="absolute bg-white rounded-xl shadow-xl p-6 w-[420px]"
-        style={{
-          top: rect.bottom + 8,
-          left: rect.right - 420,
-        }}
-      >
-        {/* header */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-lg">Add Doctor</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            ✕
-          </button>
-        </div>
-
-
-        <form className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Doctor Name</label>
-            <input
-              placeholder="Type doctor name here"
-              className="w-full border rounded-lg px-3 py-2 outline-none"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Sex</label>
-            <select className="w-full border rounded-lg px-3 py-2 outline-none">
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Specialization</label>
-            <input
-              placeholder="Type your pharmacy address"
-              className="w-full border rounded-lg px-3 py-2 outline-none"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Email Address</label>
-            <input
-              placeholder="Please enter the Email address"
-              className="w-full border rounded-lg px-3 py-2 outline-none"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-sm font-medium">Hospital Name</label>
-            <input
-              placeholder="Please enter the website URL"
-              className="w-full border rounded-lg px-3 py-2 outline-none"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full bg-primary text-white py-2 rounded-lg font-semibold"
-          >
-            Confirm
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 const Doctors = () => {
   const [search, setSearch] = useState("");
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
   const [open, setOpen] = useState(false);
+
   const addBtnRef = useRef(null);
+  const hasFetched = useRef(false);
+
+  const token = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      fetchDoctors();
+      hasFetched.current = true;
+    }
+  }, []);
+
+  const fetchDoctors = async () => {
+    const toastId = toast.loading("Fetching doctors...");
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/users/admin/doctors/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        const formatted = result.doctors.map((doc) => ({
+          name: doc.name,
+          email: doc.doctor_email,
+          specialization: doc.specialization,
+          gender: doc.sex,
+          hospital: doc.hospital_name,
+          status: "Active", // যদি backend status না দেয়
+        }));
+
+        setData(formatted);
+        setTotal(formatted.length);
+
+        toast.success("Doctors loaded successfully ✅", { id: toastId });
+      } else {
+        toast.error("Failed to load doctors ❌", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Server error ❌", { id: toastId });
+    }
+  };
+
+  /* ================= SEARCH ================= */
+
+  const filteredData = data.filter((doctor) =>
+    doctor.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  /* ================= TABLE ================= */
 
   const columns = [
     { header: "Doctor name", key: "name" },
@@ -103,46 +82,11 @@ const Doctors = () => {
     },
   ];
 
-  const data = [
-    {
-      name: "Dr. Roy",
-      email: "dr.roy@example.com",
-      specialization: "Cardiologist",
-      gender: "Male",
-      hospital: "Lab Aid Hospital",
-      status: "Active",
-    },
-    {
-      name: "Dr. Sawly",
-      email: "dr.sawly@example.com",
-      specialization: "Neurologist",
-      gender: "Female",
-      hospital: "Islami Bank Hospital",
-      status: "Active",
-    },
-    {
-      name: "Dr. Dina",
-      email: "dr.dina@example.com",
-      specialization: "Psychiatrist",
-      gender: "Female",
-      hospital: "Farazi Hospital",
-      status: "Active",
-    },
-    {
-      name: "Dr. Hasan",
-      email: "dr.hasan@example.com",
-      specialization: "Oncologist",
-      gender: "Male",
-      hospital: "Islami Bank Hospital",
-      status: "Active",
-    },
-  ];
-
   return (
     <div className="p-4 space-y-8">
       <StatsCom
         title="Total Doctors"
-        value={data.length}
+        value={filteredData.length}
         icon="material-symbols:person-outline"
       />
 
@@ -155,13 +99,7 @@ const Doctors = () => {
         onFilterClick={() => console.log("Filter clicked")}
       />
 
-      <DataTable columns={columns} data={data} />
-
-      <DoctorFormOverlay
-        open={open}
-        anchorRef={addBtnRef}
-        onClose={() => setOpen(false)}
-      />
+      <DataTable columns={columns} data={filteredData} />
     </div>
   );
 };

@@ -11,41 +11,43 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+  const email = e.target.email.value;
+  const password = e.target.password.value;
 
-    try {
-      const response = await fetch(`${BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const response = await fetch(`${BASE_URL}/users/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok && data.token) {
-        // Save token & user
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+    if (response.ok && data.access) {
+      // ✅ Save access & refresh token
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      localStorage.setItem("userId", data.id);
 
-        toast.success("Login successful 🎉");
+      toast.success("Login successful 🎉");
 
-        navigate("/");
-      } else {
-        toast.error(data.message || "Invalid credentials");
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
-      toast.error("Server error! Please try again.");
-    } finally {
-      setLoading(false);
+      navigate("/");
+    } else {
+      toast.error(data.message || "Invalid credentials");
     }
-  };
+  } catch (error) {
+    console.error("Login Error:", error);
+    toast.error("Server error! Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-background-main flex flex-col">
@@ -103,14 +105,14 @@ export default function Login() {
             </div>
 
             {/* REMEMBER + FORGOT */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center justify-end text-sm">
+              {/* <label className="flex items-center gap-2 text-gray-600">
                 <input
                   type="checkbox"
                   className="cursor-pointer accent-primary"
                 />
                 Remember Password
-              </label>
+              </label> */}
 
               <Link
                 to="/forgot-password"

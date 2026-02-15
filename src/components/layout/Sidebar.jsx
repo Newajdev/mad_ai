@@ -10,7 +10,11 @@ export default function Sidebar({ isOpen, onClose }) {
       path: "/",
       icon: "material-symbols:dashboard-outline",
     },
-    { name: "Users", path: "/users", icon: "material-symbols:group-outline" },
+    { 
+      name: "Users", 
+      path: "/users", 
+      icon: "material-symbols:group-outline" 
+    },
     {
       name: "Doctors",
       path: "/doctors",
@@ -29,22 +33,18 @@ export default function Sidebar({ isOpen, onClose }) {
   ];
 
   const handleLogout = () => {
-    // 🔹 clear auth data (if any)
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    // 🔹 close sidebar on mobile
     if (window.innerWidth < 768) {
       onClose?.();
     }
 
-    // 🔹 redirect to login
     navigate("/login", { replace: true });
   };
 
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden"
@@ -84,7 +84,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   ${
                     isActive
                       ? "bg-primary text-white shadow-lg shadow-primary/20"
-                      : "text-text-muted hover:bg-primary-light hover:text-primary"
+                      : "text-primary hover:bg-primary-light hover:text-primary"
                   }`
                 }
                 onClick={() => {
@@ -103,7 +103,7 @@ export default function Sidebar({ isOpen, onClose }) {
             <button
               onClick={handleLogout}
               className="flex w-full items-center gap-3 rounded-lg px-4 py-4
-              text-lg font-semibold text-red-400 transition-all
+              text-lg font-semibold text-primary transition-all
               hover:bg-red-50 hover:text-red-600 cursor-pointer"
             >
               <Icon

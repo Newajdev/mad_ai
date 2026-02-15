@@ -1,13 +1,20 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import BackNextButtons from "../../components/BackNextButtons";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export default function VerifyOTP() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(60);
-  const canResend = timeLeft === 0;
+  const [loading, setLoading] = useState(false);
   const inputRefs = useRef([]);
+
+  const email = localStorage.getItem("resetEmail");
+
+  const canResend = timeLeft === 0;
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -24,7 +31,6 @@ export default function VerifyOTP() {
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
 
-    // Move to next input if value is entered
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
     }
@@ -36,19 +42,77 @@ export default function VerifyOTP() {
     }
   };
 
-  const handleResend = () => {
-    if (!canResend) return;
-    // Resend logic here (e.g., API call)
-    console.log("Resending OTP...");
-    setTimeLeft(60);
-    setOtp(["", "", "", "", "", ""]);
-    inputRefs.current[0].focus();
+  // ✅ VERIFY OTP
+  const handleVerify = async (e) => {
+    e.preventDefault();
+
+    const fullOtp = otp.join("");
+
+    if (fullOtp.length !== 6) {
+      return toast.error("Please enter full 6 digit OTP");
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${BASE_URL}/users/otp/verify/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp: fullOtp,
+          purpose: "password_reset",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || "OTP verified successfully ✅");
+
+        navigate("/password-changed");
+      } else {
+        toast.error(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.error("OTP Verify Error:", error);
+      toast.error("Server error! Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerify = (e) => {
-    e.preventDefault();
-    console.log("OTP Submitted:", otp.join(""));
-    navigate("/password-changed");
+  // ✅ RESEND OTP
+  const handleResend = async () => {
+    if (!canResend) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/users/otp/request/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          purpose: "password_reset",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("OTP resent successfully 🔄");
+        setTimeLeft(60);
+        setOtp(["", "", "", "", "", ""]);
+        inputRefs.current[0].focus();
+      } else {
+        toast.error(data.message || "Failed to resend OTP");
+      }
+    } catch (error) {
+      toast.error("Server error! Please try again.");
+    }
   };
 
   const formatTime = (seconds) => {
@@ -63,23 +127,20 @@ export default function VerifyOTP() {
     <div className="min-h-screen bg-background-main flex flex-col">
       <div className="h-20 bg-primary" />
 
-      {/* LOGIN CARD */}
       <div className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-lg bg-white rounded-3xl shadow-lg p-10">
           <div className="flex flex-col items-center mb-6">
             <img src={"/logo.png"} alt="Logo" />
           </div>
 
-          {/* TITLE */}
           <h2 className="text-center text-2xl text-primary font-semibold mb-1 pb-4">
             Check your Email
           </h2>
+
           <p className="text-center text-sm text-gray-500 mb-6 pb-4">
-            We sent a code to your email address @. Please check your email for
-            the 6 digit code.
+            We sent a code to your email address. <br />Please check your email for the 6 digit code.
           </p>
 
-          {/* FORM */}
           <form onSubmit={handleVerify} className="space-y-6">
             <div className="flex justify-center gap-4 pb-5">
               {otp.map((data, index) => (
@@ -91,26 +152,27 @@ export default function VerifyOTP() {
                   ref={(el) => (inputRefs.current[index] = el)}
                   onChange={(e) => handleChange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-12 h-12 text-center text-lg font-semibold border border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary uppercase"
+                  className="w-12 h-12 text-center text-lg font-semibold border border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               ))}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-primary text-white py-3 rounded-md font-medium hover:opacity-90 transition cursor-pointer"
+              disabled={loading}
+              className="w-full bg-primary text-white py-3 rounded-md font-medium hover:opacity-90 transition disabled:opacity-50 cursor-pointer"
             >
-              Verify
+              {loading ? "Verifying..." : "Verify"}
             </button>
 
             <div className="text-center text-sm text-gray-500">
               {canResend ? (
                 <p>
-                  You have not received the email?{" "}
+                  Didn’t receive code?{" "}
                   <button
                     type="button"
                     onClick={handleResend}
-                    className="text-primary cursor-pointer font-bold hover:underline"
+                    className="text-primary font-bold hover:underline"
                   >
                     Resend
                   </button>
