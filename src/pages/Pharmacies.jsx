@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import DataTable, { StatusDropdown } from "../components/TableComp";
+import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 import toast from "react-hot-toast";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { getPharmacies } from "../api/pharmaciesApi";
 
 const Pharmacies = () => {
   const [search, setSearch] = useState("");
@@ -13,9 +13,7 @@ const Pharmacies = () => {
   const [total, setTotal] = useState(0);
 
   const addBtnRef = useRef(null);
-  const hasFetched = useRef(false); // ✅ StrictMode guard
-
-  const token = localStorage.getItem("accessToken");
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -28,44 +26,28 @@ const Pharmacies = () => {
     const toastId = toast.loading("Fetching pharmacies...");
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/users/admin/pharmacists/`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const result = await getPharmacies();
+
+      const formatted = result.pharmacies.map((item) => ({
+        name: item.pharmacy_name,
+        website: item.website_link.replace(/^https?:\/\//, ""),
+        address: item.Pharmacy_Address,
+      }));
+
+      setData(formatted);
+      setTotal(
+        result.total_pharmacies ||
+        result.pharmacies?.length ||
+        0
       );
 
-      const result = await response.json();
-
-      if (response.ok) {
-        const formatted = result.pharmacies.map((item) => ({
-          name: item.pharmacy_name,
-          website: item.website_link.replace(/^https?:\/\//, ""),
-          address: item.Pharmacy_Address,
-          status: "Active",
-        }));
-
-        setData(formatted); // ✅ replace (not append)
-        setTotal(result.total_pharmacies);
-
-        toast.success("Pharmacies loaded successfully ✅", {
-          id: toastId,
-        });
-      } else {
-        toast.error("Failed to fetch pharmacies ❌", {
-          id: toastId,
-        });
-        console.error(result);
-      }
-    } catch (error) {
-      toast.error("Server error while fetching pharmacies ❌", {
+      toast.success("Pharmacies loaded successfully ✅", {
         id: toastId,
       });
-      console.error("Fetch Error:", error);
+    } catch (error) {
+      toast.error("Failed to fetch pharmacies ❌", {
+        id: toastId,
+      });
     }
   };
 
@@ -86,11 +68,6 @@ const Pharmacies = () => {
       ),
     },
     { header: "Address", key: "address" },
-    {
-      header: "Status",
-      key: "status",
-      render: (status) => <StatusDropdown value={status} />,
-    },
   ];
 
   return (

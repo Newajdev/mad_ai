@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { loginUser } from "../../api/authApi";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,43 +11,29 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  const email = e.target.email.value;
-  const password = e.target.password.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
-  try {
-    const response = await fetch(`${BASE_URL}/users/login/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const data = await loginUser({ email, password });
 
-    const data = await response.json();
-
-    if (response.ok && data.access) {
-      // ✅ Save access & refresh token
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
       localStorage.setItem("userId", data.id);
 
       toast.success("Login successful 🎉");
-
       navigate("/");
-    } else {
-      toast.error(data.message || "Invalid credentials");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Invalid credentials ❌"
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Login Error:", error);
-    toast.error("Server error! Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen bg-background-main flex flex-col">
@@ -104,16 +90,8 @@ export default function Login() {
               </div>
             </div>
 
-            {/* REMEMBER + FORGOT */}
+            {/* FORGOT PASSWORD */}
             <div className="flex items-center justify-end text-sm">
-              {/* <label className="flex items-center gap-2 text-gray-600">
-                <input
-                  type="checkbox"
-                  className="cursor-pointer accent-primary"
-                />
-                Remember Password
-              </label> */}
-
               <Link
                 to="/forgot-password"
                 className="text-gray-500 underline hover:text-primary"

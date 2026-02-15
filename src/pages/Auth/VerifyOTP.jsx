@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import BackNextButtons from "../../components/BackNextButtons";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { verifyOtp, requestOtp } from "../../api/authApi";
 
 export default function VerifyOTP() {
   const navigate = useNavigate();
@@ -13,7 +13,6 @@ export default function VerifyOTP() {
   const inputRefs = useRef([]);
 
   const email = localStorage.getItem("resetEmail");
-
   const canResend = timeLeft === 0;
 
   useEffect(() => {
@@ -42,7 +41,8 @@ export default function VerifyOTP() {
     }
   };
 
-  // ✅ VERIFY OTP
+  /*  VERIFY OTP  */
+
   const handleVerify = async (e) => {
     e.preventDefault();
 
@@ -55,63 +55,44 @@ export default function VerifyOTP() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/users/otp/verify/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          otp: fullOtp,
-          purpose: "password_reset",
-        }),
+      const data = await verifyOtp({
+        email,
+        otp: fullOtp,
+        purpose: "password_reset",
       });
 
-      const data = await response.json();
+      toast.success(data.message || "OTP verified successfully ✅");
 
-      if (response.ok) {
-        toast.success(data.message || "OTP verified successfully ✅");
-
-        navigate("/password-changed");
-      } else {
-        toast.error(data.message || "Invalid OTP");
-      }
+      navigate("/password-changed");
     } catch (error) {
-      console.error("OTP Verify Error:", error);
-      toast.error("Server error! Please try again.");
+      toast.error(
+        error?.response?.data?.message || "Invalid OTP ❌"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ RESEND OTP
+  /*  RESEND OTP  */
+
   const handleResend = async () => {
     if (!canResend) return;
 
     try {
-      const response = await fetch(`${BASE_URL}/users/otp/request/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          purpose: "password_reset",
-        }),
+      await requestOtp({
+        email,
+        purpose: "password_reset",
       });
 
-      const data = await response.json();
+      toast.success("OTP resent successfully 🔄");
 
-      if (response.ok) {
-        toast.success("OTP resent successfully 🔄");
-        setTimeLeft(60);
-        setOtp(["", "", "", "", "", ""]);
-        inputRefs.current[0].focus();
-      } else {
-        toast.error(data.message || "Failed to resend OTP");
-      }
+      setTimeLeft(60);
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
     } catch (error) {
-      toast.error("Server error! Please try again.");
+      toast.error(
+        error?.response?.data?.message || "Failed to resend OTP ❌"
+      );
     }
   };
 
@@ -138,7 +119,8 @@ export default function VerifyOTP() {
           </h2>
 
           <p className="text-center text-sm text-gray-500 mb-6 pb-4">
-            We sent a code to your email address. <br />Please check your email for the 6 digit code.
+            We sent a code to your email address. <br />
+            Please check your email for the 6 digit code.
           </p>
 
           <form onSubmit={handleVerify} className="space-y-6">

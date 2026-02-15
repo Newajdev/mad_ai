@@ -4,7 +4,7 @@ import { Eye, EyeOff, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import BackNextButtons from "../../components/BackNextButtons";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { resetPassword } from "../../api/authApi";
 
 export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +20,7 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = e.target.email.value; // ✅ email form থেকে নিচ্ছি
+    const email = e.target.email.value;
 
     if (!email) {
       setError("Please enter your email");
@@ -41,33 +41,20 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/users/password/reset/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          new_password: password,
-          confirm_password: confirmPassword,
-        }),
+      const data = await resetPassword({
+        email,
+        new_password: password,
+        confirm_password: confirmPassword,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(data.message || "Password updated successfully ✅");
-        setShowSuccessModal(true);
-      } else {
-        toast.error(
-          data?.message ||
-            data?.detail ||
-            "Password reset failed. Please check your input."
-        );
-      }
+      toast.success(data.message || "Password updated successfully ✅");
+      setShowSuccessModal(true);
     } catch (error) {
-      console.error("Reset Password Error:", error);
-      toast.error("Server error! Please try again.");
+      toast.error(
+        error?.response?.data?.message ||
+          error?.response?.data?.detail ||
+          "Password reset failed ❌"
+      );
     } finally {
       setLoading(false);
     }
@@ -101,7 +88,6 @@ export default function ResetPassword() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             {/* EMAIL */}
             <div>
               <label className="text-sm text-gray-600 block mb-1">

@@ -21,7 +21,7 @@ export default function BackNextButtons({
           type="button"
           onClick={onBack ? onBack : () => navigate(-1)}
           disabled={disableBack}
-          className={`text-primary flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition cursor-pointer
+          className={`text-primary flex items-center gap-2 px-2 py-1 rounded-lg font-medium transition cursor-pointer border
             ${
               disableBack
                 ? "text-gray-400 cursor-not-allowed"
@@ -41,7 +41,7 @@ export default function BackNextButtons({
           type="button"
           onClick={onNext}
           disabled={disableNext}
-          className={`text-primary flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition cursor-pointer
+          className={`text-primary flex items-center gap-2 px-2 py-1 rounded-lg font-medium transition cursor-pointer border
             ${
               disableNext
                 ? "text-gray-400 cursor-not-allowed"

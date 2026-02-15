@@ -4,18 +4,15 @@ import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 import toast from "react-hot-toast";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { getDoctors } from "../api/doctorsApi";
 
 const Doctors = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
-  const [total, setTotal] = useState(0);
   const [open, setOpen] = useState(false);
 
   const addBtnRef = useRef(null);
   const hasFetched = useRef(false);
-
-  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -28,36 +25,22 @@ const Doctors = () => {
     const toastId = toast.loading("Fetching doctors...");
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/users/admin/doctors/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await getDoctors();
 
-      const result = await response.json();
+      const formatted = result.doctors.map((doc) => ({
+        name: doc.name,
+        email: doc.doctor_email,
+        specialization: doc.specialization,
+        gender: doc.sex,
+        hospital: doc.hospital_name,
+        // status: "Active",
+      }));
 
-      if (response.ok) {
-        const formatted = result.doctors.map((doc) => ({
-          name: doc.name,
-          email: doc.doctor_email,
-          specialization: doc.specialization,
-          gender: doc.sex,
-          hospital: doc.hospital_name,
-          status: "Active", // যদি backend status না দেয়
-        }));
+      setData(formatted);
 
-        setData(formatted);
-        setTotal(formatted.length);
-
-        toast.success("Doctors loaded successfully ✅", { id: toastId });
-      } else {
-        toast.error("Failed to load doctors ❌", { id: toastId });
-      }
+      toast.success("Doctors loaded successfully ✅", { id: toastId });
     } catch (error) {
-      toast.error("Server error ❌", { id: toastId });
+      toast.error("Failed to load doctors ❌", { id: toastId });
     }
   };
 
@@ -75,11 +58,11 @@ const Doctors = () => {
     { header: "Specialization", key: "specialization" },
     { header: "Gender", key: "gender" },
     { header: "Hospital", key: "hospital" },
-    {
-      header: "Status",
-      key: "status",
-      render: (status) => <StatusDropdown value={status} />,
-    },
+    // {
+    //   header: "Status",
+    //   key: "status",
+    //   render: (status) => <StatusDropdown value={status} />,
+    // },
   ];
 
   return (

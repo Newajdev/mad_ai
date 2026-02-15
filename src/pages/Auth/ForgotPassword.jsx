@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import BackNextButtons from "../../components/BackNextButtons";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { requestOtp } from "../../api/authApi";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -16,31 +16,20 @@ export default function ForgotPassword() {
     const email = e.target.email.value;
 
     try {
-      const response = await fetch(`${BASE_URL}/users/otp/request/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          purpose: "password_reset",
-        }),
+      const data = await requestOtp({
+        email,
+        purpose: "password_reset",
       });
 
-      const data = await response.json();
+      toast.success(data.message || "OTP sent successfully ✅");
 
-      if (response.ok) {
-        toast.success(data.message || "OTP sent successfully ✅");
+      localStorage.setItem("resetEmail", email);
 
-        localStorage.setItem("resetEmail", email);
-
-        navigate("/verify-otp");
-      } else {
-        toast.error(data.message || "Something went wrong");
-      }
+      navigate("/verify-otp");
     } catch (error) {
-      console.error("OTP Request Error:", error);
-      toast.error("Server error! Please try again.");
+      toast.error(
+        error?.response?.data?.message || "Something went wrong ❌"
+      );
     } finally {
       setLoading(false);
     }

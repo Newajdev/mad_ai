@@ -1,9 +1,56 @@
-
+import React, { useState, useEffect, useRef } from "react";
 import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
+import toast from "react-hot-toast";
+
+import { getUsers } from "../api/usersApi";
 
 const Users = () => {
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      fetchUsers();
+      hasFetched.current = true;
+    }
+  }, []);
+
+  const fetchUsers = async () => {
+    const toastId = toast.loading("Fetching users...");
+
+    try {
+      const result = await getUsers();
+
+      const formatted = result.users.map((user, index) => ({
+        name: user.full_name || "N/A",
+        avatar: `https://randomuser.me/api/portraits/men/${index + 1}.jpg`,
+        email: user.email,
+        address: user.address || "Not provided",
+        age: user.age || "N/A",
+        diseases: "-",
+        medication: "-",
+      }));
+
+      setData(formatted);
+
+      toast.success("Users loaded successfully ✅", { id: toastId });
+    } catch (error) {
+      toast.error("Failed to load users ❌", { id: toastId });
+    }
+  };
+
+  /* ================= SEARCH ================= */
+
+  const filteredData = data.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  /* ================= TABLE COLUMNS ================= */
+
   const columns = [
     {
       header: "User name",
@@ -11,7 +58,11 @@ const Users = () => {
       render: (name, row) => (
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 shrink-0">
-            <img src={row.avatar} alt={name} className="w-full h-full object-cover" />
+            <img
+              src={row.avatar}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
           </div>
           <span>{name}</span>
         </div>
@@ -20,64 +71,26 @@ const Users = () => {
     { header: "Email", key: "email" },
     { header: "Address", key: "address" },
     { header: "Age", key: "age" },
-    { header: "Diseases", key: "diseases" },
-    { header: "Active medication", key: "medication" },
-  ];
-
-  const data = [
-    {
-      name: "John Miller",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      email: "abcd***@gmail.com",
-      address: "20 Cooper Sq...",
-      age: 40,
-      diseases: "coronary, Di...",
-      medication: 2,
-    },
-    {
-      name: "John Miller",
-      avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-      email: "abcd***@gmail.com",
-      address: "20 Cooper Sq...",
-      age: 41,
-      diseases: "coronary, Di...",
-      medication: 3,
-    },
-    {
-      name: "John Miller",
-      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-      email: "abcd***@gmail.com",
-      address: "20 Cooper Sq...",
-      age: 50,
-      diseases: "coronary, Di...",
-      medication: 2,
-    },
-    {
-      name: "John Miller",
-      avatar: "https://randomuser.me/api/portraits/men/4.jpg",
-      email: "abcd***@gmail.com",
-      address: "20 Cooper Sq...",
-      age: 52,
-      diseases: "coronary, Di...",
-      medication: 4,
-    },
-    
-  
+    // { header: "Diseases", key: "diseases" },
+    // { header: "Active medication", key: "medication" },
   ];
 
   return (
-  <div className="p-4 space-y-8">
-    <StatsCom
-      title="Total Users"
-      value={data.length}
-      icon="material-symbols:group-outline"
-    />
+    <div className="p-4 space-y-8">
+      <StatsCom
+        title="Total Users"
+        value={filteredData.length}
+        icon="material-symbols:group-outline"
+      />
 
-    <SearchCom />
+      <SearchCom
+        search={search}
+        setSearch={setSearch}
+      />
 
-    <DataTable columns={columns} data={data} />
-  </div>
-);
+      <DataTable columns={columns} data={filteredData} />
+    </div>
+  );
 };
 
 export default Users;
