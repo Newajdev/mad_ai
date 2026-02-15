@@ -132,7 +132,9 @@ export default function Header({ onMenuClick }) {
             onClick={() => setShowProfileModal(!showProfileModal)}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className={`h-12 w-12 rounded-full border-2 border-white ring-2 ${showProfileModal ? 'ring-primary' : 'ring-primary-light'} overflow-hidden shadow-md group-hover:ring-primary transition-all`}>
+            <div
+              className={`h-12 w-12 rounded-full border-2 border-white ring-2 ${showProfileModal ? "ring-primary" : "ring-primary-light"} overflow-hidden shadow-md group-hover:ring-primary transition-all`}
+            >
               <img
                 src={profileData.profileImage}
                 alt="Profile"
@@ -143,11 +145,13 @@ export default function Header({ onMenuClick }) {
               <span className="font-bold text-primary leading-tight">
                 {profileData.name}
               </span>
-              <span className="text-[10px] text-text-muted font-bold tracking-wider uppercase">Admin</span>
+              <span className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
+                Admin
+              </span>
             </div>
             <Icon
               icon="material-symbols:keyboard-arrow-down-rounded"
-              className={`text-primary transition-transform duration-300 ${showProfileModal ? 'rotate-180' : ''}`}
+              className={`text-primary transition-transform duration-300 ${showProfileModal ? "rotate-180" : ""}`}
             />
           </div>
 
@@ -192,7 +196,9 @@ export default function Header({ onMenuClick }) {
 
                 <div className="pt-14 p-6 space-y-6">
                   <div className="text-center">
-                    <h3 className="text-xl font-black text-primary mb-1">{profileData.name}</h3>
+                    <h3 className="text-xl font-black text-primary mb-1">
+                      {profileData.name}
+                    </h3>
                     <div className="inline-flex items-center px-3 py-1 bg-primary-light/30 rounded-full text-[10px] font-black text-primary uppercase tracking-widest">
                       Admin Profile Info
                     </div>
@@ -201,46 +207,73 @@ export default function Header({ onMenuClick }) {
                   <div className="space-y-4">
                     {/* User Name */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Full Name</label>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                        Full Name
+                      </label>
                       <div className="relative group">
                         <input
                           type="text"
                           className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold"
                           value={profileData.name}
-                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
 
                     {/* Email */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Email Address</label>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                        Email Address
+                      </label>
                       <div className="relative group">
                         <input
                           type="email"
                           className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold"
                           value={profileData.email}
-                          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              email: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
 
                     {/* Password with Visibility Toggle & Strength */}
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">New Password</label>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                        Current Password
+                      </label>
                       <div className="relative group">
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
                           className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
                           value={profileData.password}
-                          onChange={(e) => setProfileData({ ...profileData, password: e.target.value })}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              password: e.target.value,
+                            })
+                          }
                         />
+
                         <button
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
                         >
-                          <Icon icon={showPassword ? "lucide:eye-off" : "lucide:eye"} width="18" />
+                          <Icon
+                            icon={
+                              showPassword ? "lucide:eye-off" : "lucide:eye"
+                            }
+                            width="18"
+                          />
                         </button>
                       </div>
                       {profileData.password && (
@@ -248,10 +281,115 @@ export default function Header({ onMenuClick }) {
                           {[1, 2, 3].map((lvl) => (
                             <div
                               key={lvl}
-                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${strength >= lvl
-                                ? (strength === 1 ? 'bg-red-400' : strength === 2 ? 'bg-orange-400' : 'bg-green-400')
-                                : 'bg-gray-100'
-                                }`}
+                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                                strength >= lvl
+                                  ? strength === 1
+                                    ? "bg-red-400"
+                                    : strength === 2
+                                      ? "bg-orange-400"
+                                      : "bg-green-400"
+                                  : "bg-gray-100"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                        New Password
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
+                          value={profileData.password}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              password: e.target.value,
+                            })
+                          }
+                        />
+
+                        <button
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                        >
+                          <Icon
+                            icon={
+                              showPassword ? "lucide:eye-off" : "lucide:eye"
+                            }
+                            width="18"
+                          />
+                        </button>
+                      </div>
+                      {profileData.password && (
+                        <div className="flex gap-1 px-1 pt-1">
+                          {[1, 2, 3].map((lvl) => (
+                            <div
+                              key={lvl}
+                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                                strength >= lvl
+                                  ? strength === 1
+                                    ? "bg-red-400"
+                                    : strength === 2
+                                      ? "bg-orange-400"
+                                      : "bg-green-400"
+                                  : "bg-gray-100"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+                        Confirm Password
+                      </label>
+                      <div className="relative group">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
+                          value={profileData.password}
+                          onChange={(e) =>
+                            setProfileData({
+                              ...profileData,
+                              password: e.target.value,
+                            })
+                          }
+                        />
+
+                        <button
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                        >
+                          <Icon
+                            icon={
+                              showPassword ? "lucide:eye-off" : "lucide:eye"
+                            }
+                            width="18"
+                          />
+                        </button>
+                      </div>
+                      {profileData.password && (
+                        <div className="flex gap-1 px-1 pt-1">
+                          {[1, 2, 3].map((lvl) => (
+                            <div
+                              key={lvl}
+                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
+                                strength >= lvl
+                                  ? strength === 1
+                                    ? "bg-red-400"
+                                    : strength === 2
+                                      ? "bg-orange-400"
+                                      : "bg-green-400"
+                                  : "bg-gray-100"
+                              }`}
                             />
                           ))}
                         </div>
@@ -293,7 +431,9 @@ export default function Header({ onMenuClick }) {
               <h3 className="text-2xl font-black text-gray-800 leading-tight">
                 Save Changes?
               </h3>
-              <p className="text-sm text-text-muted font-bold">Your profile information will be updated.</p>
+              <p className="text-sm text-text-muted font-bold">
+                Your profile information will be updated.
+              </p>
             </div>
             <div className="flex gap-4">
               <button
