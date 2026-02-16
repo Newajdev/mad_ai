@@ -15,7 +15,6 @@ export default function Header({ onMenuClick }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  /* ========================================================== */
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -90,7 +89,7 @@ export default function Header({ onMenuClick }) {
       }
     }
   };
-  /* ======================================================== */
+
 
   const title = getTitle(location.pathname);
 
@@ -108,7 +107,7 @@ export default function Header({ onMenuClick }) {
         {/* TITLE */}
         <h1
           className={`font-bold text-primary truncate ${
-            isMobile ? "text-lg max-w-[200px]" : "text-4xl"
+            isMobile ? "text-lg max-w-50" : "text-4xl"
           }`}
         >
           {title}

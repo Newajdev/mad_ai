@@ -28,17 +28,21 @@ const Pharmacies = () => {
     try {
       const result = await getPharmacies();
 
-      const formatted = result.pharmacies.map((item) => ({
-        name: item.pharmacy_name,
-        website: item.website_link.replace(/^https?:\/\//, ""),
-        address: item.Pharmacy_Address,
-      }));
+      const formatted =
+        result?.pharmacies?.map((item) => ({
+          name: item?.pharmacy_name || "N/A",
+          website: item?.website_link
+            ? item.website_link.replace(/^https?:\/\//, "")
+            : "",
+          address: item?.Pharmacy_Address || "N/A",
+        })) || [];
 
       setData(formatted);
+
       setTotal(
-        result.total_pharmacies ||
-        result.pharmacies?.length ||
-        0
+        result?.total_pharmacies ||
+          result?.pharmacies?.length ||
+          0
       );
 
       toast.success("Pharmacies loaded successfully ✅", {
@@ -51,27 +55,38 @@ const Pharmacies = () => {
     }
   };
 
+  /* ================= SEARCH ================= */
+
+  const filteredData = data.filter((pharmacy) =>
+    pharmacy?.name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  /* ================= TABLE ================= */
+
   const columns = [
     { header: "Pharmacy name", key: "name" },
     {
       header: "Website",
       key: "website",
-      render: (url) => (
-        <a
-          href={`https://${url}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline hover:text-primary"
-        >
-          {url}
-        </a>
-      ),
+      render: (url) =>
+        url ? (
+          <a
+            href={`https://${url}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline hover:text-primary break-all"
+          >
+            {url}
+          </a>
+        ) : (
+          "N/A"
+        ),
     },
     { header: "Address", key: "address" },
   ];
 
   return (
-    <div className="p-4 space-y-8">
+    <div className="p-4 md:p-6 space-y-6 md:space-y-8">
       <StatsCom
         title="Total Pharmacies"
         value={total}
@@ -87,7 +102,7 @@ const Pharmacies = () => {
         onFilterClick={() => console.log("Filter clicked")}
       />
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={filteredData} />
     </div>
   );
 };

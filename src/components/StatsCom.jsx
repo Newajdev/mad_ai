@@ -6,22 +6,55 @@ export default function StatsCom({
   icon,
 }) {
   return (
-    <div className="bg-white shadow rounded-xl px-7 py-7 relative flex items-center">
+    <div className="
+      relative
+      bg-white
+      shadow
+      rounded-xl
+      px-4 sm:px-6 md:px-9
+      py-6 md:py-9
+      flex
+      flex-col sm:flex-row
+      items-center
+      justify-between
+      gap-4
+    ">
 
-      <div className="shadow absolute left-6 h-12 flex items-center justify-center rounded-lg bg-background-main text-primary px-4">
-        <p className="font-bold text-[25px]">
+      {/* TITLE */}
+      <div className="
+        sm:absolute
+        sm:left-6
+        bg-background-main
+        text-primary
+        rounded-lg
+        px-4
+        py-2
+        shadow
+      ">
+        <p className="font-bold text-lg sm:text-xl md:text-[25px] text-center sm:text-left">
           {title}
         </p>
       </div>
 
-      <div className="mx-auto">
-        <h3 className="text-3xl font-bold text-primary">
+      {/* VALUE */}
+      <div className="text-center sm:mx-auto">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">
           {value ?? "--"}
         </h3>
       </div>
 
-      <div className="shadow absolute right-6 h-12 w-14 flex items-center justify-center rounded-lg bg-background-main text-primary">
-        <Icon icon={icon} width="40" height="40" />
+      {/* ICON */}
+      <div className="
+        sm:absolute
+        sm:right-6
+        bg-background-main
+        text-primary
+        rounded-lg
+        h-12 w-12 md:h-14 md:w-14
+        flex items-center justify-center
+        shadow
+      ">
+        <Icon icon={icon} width="28" height="28" className="md:w-[40px] md:h-[40px]" />
       </div>
 
     </div>

@@ -16,12 +16,12 @@ export default function ModalFormCard({
   if (!anchorRect) return null;
 
   return (
-    <div className="fixed inset-0 z-[999]">
+    <div className="fixed inset-0 z-999">
 
       <div className="absolute inset-0" onClick={onClose} />
 
       <div
-        className="absolute bg-white rounded-xl p-6 shadow-xl w-[420px]"
+        className="absolute bg-white rounded-xl p-6 shadow-xl w-105"
         style={{
           top: anchorRect.bottom + 8,
           left: Math.max(16, anchorRect.right - 420),

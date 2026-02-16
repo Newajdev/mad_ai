@@ -31,8 +31,6 @@ const Users = () => {
         email: user.email,
         address: user.address || "Not provided",
         age: user.age || "N/A",
-        diseases: "-",
-        medication: "-",
       }));
 
       setData(formatted);
@@ -56,27 +54,26 @@ const Users = () => {
       header: "User name",
       key: "name",
       render: (name, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-40">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-gray-100 shrink-0">
             <img
               src={row.avatar}
               alt={name}
               className="w-full h-full object-cover"
             />
           </div>
-          <span>{name}</span>
+          <span className="truncate text-sm sm:text-base">{name}</span>
         </div>
       ),
     },
     { header: "Email", key: "email" },
     { header: "Address", key: "address" },
     { header: "Age", key: "age" },
-    // { header: "Diseases", key: "diseases" },
-    // { header: "Active medication", key: "medication" },
   ];
 
   return (
-    <div className="p-4 space-y-8">
+    <div className="px-3 sm:px-4 md:px-6 py-4 space-y-6 md:space-y-8">
+
       <StatsCom
         title="Total Users"
         value={filteredData.length}
@@ -88,7 +85,10 @@ const Users = () => {
         setSearch={setSearch}
       />
 
-      <DataTable columns={columns} data={filteredData} />
+      <div className="overflow-x-auto rounded-xl">
+        <DataTable columns={columns} data={filteredData} />
+      </div>
+
     </div>
   );
 };

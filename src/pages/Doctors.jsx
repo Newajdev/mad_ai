@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import DataTable, { StatusDropdown } from "../components/TableComp";
+import DataTable from "../components/TableComp";
 import StatsCom from "../components/StatsCom";
 import SearchCom from "../components/SearchCom";
 import toast from "react-hot-toast";
@@ -27,14 +27,14 @@ const Doctors = () => {
     try {
       const result = await getDoctors();
 
-      const formatted = result.doctors.map((doc) => ({
-        name: doc.name,
-        email: doc.doctor_email,
-        specialization: doc.specialization,
-        gender: doc.sex,
-        hospital: doc.hospital_name,
+      const formatted = result?.doctors?.map((doc) => ({
+        name: doc?.name || "N/A",
+        email: doc?.doctor_email || "N/A",
+        specialization: doc?.specialization || "N/A",
+        gender: doc?.sex || "N/A",
+        hospital: doc?.hospital_name || "N/A",
         // status: "Active",
-      }));
+      })) || [];
 
       setData(formatted);
 
@@ -47,7 +47,7 @@ const Doctors = () => {
   /* ================= SEARCH ================= */
 
   const filteredData = data.filter((doctor) =>
-    doctor.name.toLowerCase().includes(search.toLowerCase())
+    doctor?.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   /* ================= TABLE ================= */
@@ -66,7 +66,7 @@ const Doctors = () => {
   ];
 
   return (
-    <div className="p-4 space-y-8">
+    <div className="p-4 md:p-6 space-y-6 md:space-y-8">
       <StatsCom
         title="Total Doctors"
         value={filteredData.length}

@@ -1,6 +1,4 @@
-
 export default function Notifications() {
-
   const notifications = [
     {
       id: 1,
@@ -35,41 +33,35 @@ export default function Notifications() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="p-4 md:p-6 space-y-6 md:space-y-10">
       {/* NOTIFICATION CARD */}
-      <div className="bg-white rounded-2xl shadow-sm p-8 relative">
+      <div className="bg-white rounded-2xl shadow-sm p-5 md:p-8 relative">
+        
         {/* HEADER */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-text-main">
+            <h3 className="text-lg md:text-xl font-semibold text-text-main">
               Notification
             </h3>
             <p className="text-sm text-text-muted">
               Total {notifications.length} Notifications
             </p>
           </div>
-
-          <div className="flex items-center gap-3">
-            {/* <Icon
-              icon="material-symbols:notifications-outline-rounded"
-              className="text-primary"
-              width="26"
-            /> */}
-
-          </div>
         </div>
 
         {/* LIST */}
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-125 overflow-y-auto pr-1">
           {notifications.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between gap-4
-              bg-primary-light/30 px-5 py-3 rounded-lg"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2
+              bg-primary-light/30 hover:bg-primary-light/50
+              px-4 md:px-5 py-3 rounded-lg transition-all"
             >
-              <p className="text-sm text-text-main truncate">
+              <p className="text-sm text-text-main break-words-word">
                 {item.text}
               </p>
+
               <span className="text-xs text-text-muted whitespace-nowrap">
                 {item.time}
               </span>

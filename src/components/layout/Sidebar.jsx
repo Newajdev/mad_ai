@@ -18,7 +18,7 @@ export default function Sidebar({ isOpen, onClose }) {
     {
       name: "Doctors",
       path: "/doctors",
-      icon: "material-symbols:person-2-outline",
+      icon: "material-symbols:medication-outline",
     },
     {
       name: "Pharmacies",
