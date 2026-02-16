@@ -1,13 +1,41 @@
 import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+
+import FormInput from "../../components/FormInput";
+import PasswordInput from "../../components/PasswordInput";
+import ConfirmModal from "../../components/ConfirmModal";
+
+import {
+  getAdminProfileApi,
+  updateAdminProfileApi,
+  changeAdminPasswordApi,
+} from "../../api/profileApi";
 
 export default function Header({ onMenuClick }) {
   const location = useLocation();
 
-  /* ================= RESPONSIVE TITLE STATE ================= */
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  const dropdownRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const [profileData, setProfileData] = useState({
+    full_name: "",
+    email: "",
+    old_password: "",
+    new_password: "",
+    confirm_password: "",
+    profile_picture: "",
+  });
+
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+
+  /* ================= RESPONSIVE TITLE ================= */
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -16,58 +44,6 @@ export default function Header({ onMenuClick }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const dropdownRef = useRef(null);
-  const fileInputRef = useRef(null);
-
-  const [profileData, setProfileData] = useState({
-    name: "Smith Jaman",
-    email: "abcd@gmail.com",
-    password: "",
-    profileImage: "https://randomuser.me/api/portraits/men/32.jpg",
-  });
-
-  const getPasswordStrength = (pwd) => {
-    if (!pwd) return 0;
-    if (pwd.length < 6) return 1;
-    if (pwd.length < 10) return 2;
-    return 3;
-  };
-
-  const strength = getPasswordStrength(profileData.password);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowProfileModal(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const imageUrl = URL.createObjectURL(file);
-    setProfileData((prev) => ({ ...prev, profileImage: imageUrl }));
-  };
-
-  const handleSave = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      setShowConfirmModal(false);
-      setShowProfileModal(false);
-    }, 1500);
-  };
-
-  /* ================= RESPONSIVE getTitle ================= */
   const getTitle = (path) => {
     switch (path) {
       case "/":
@@ -90,86 +66,219 @@ export default function Header({ onMenuClick }) {
     }
   };
 
-
   const title = getTitle(location.pathname);
 
+  /* ================= FETCH PROFILE ================= */
+  const fetchProfile = async () => {
+    try {
+      const data = await getAdminProfileApi();
+      setProfileData((prev) => ({
+        ...prev,
+        full_name: data?.full_name || "",
+        email: data?.email || "",
+        profile_picture: data?.profile_picture || "",
+      }));
+    } catch {
+      toast.error("Failed to load profile");
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  /* ================= CLOSE ON OUTSIDE CLICK ================= */
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowProfileModal(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  /* ================= IMAGE CHANGE ================= */
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setSelectedImageFile(file);
+
+    const previewUrl = URL.createObjectURL(file);
+    setProfileData((prev) => ({
+      ...prev,
+      profile_picture: previewUrl,
+    }));
+  };
+
+  /* ================= SAVE PROFILE ================= */
+  const handleSave = async () => {
+    try {
+      if (!profileData.full_name.trim()) {
+        toast.error("Full name is required");
+        return;
+      }
+
+      if (!profileData.email.trim()) {
+        toast.error("Email is required");
+        return;
+      }
+
+      if (profileData.new_password) {
+        if (!profileData.old_password) {
+          toast.error("Current password is required");
+          return;
+        }
+        if (profileData.new_password !== profileData.confirm_password) {
+          toast.error("Passwords do not match");
+          return;
+        }
+      }
+
+      setIsSaving(true);
+      const toastId = toast.loading("Updating profile...");
+
+      const formData = new FormData();
+      formData.append("full_name", profileData.full_name);
+      formData.append("email", profileData.email);
+
+      if (selectedImageFile) {
+        formData.append("profile_picture", selectedImageFile);
+      }
+
+      const updatedProfile = await updateAdminProfileApi(formData);
+
+      setProfileData((prev) => ({
+        ...prev,
+        profile_picture: updatedProfile?.profile_picture,
+      }));
+
+      if (profileData.new_password) {
+        await changeAdminPasswordApi({
+          old_password: profileData.old_password,
+          new_password: profileData.new_password,
+          confirm_password: profileData.confirm_password,
+        });
+      }
+
+      toast.success("Profile updated successfully 🎉", { id: toastId });
+
+      setShowConfirmModal(false);
+      setShowProfileModal(false);
+
+      setProfileData((prev) => ({
+        ...prev,
+        old_password: "",
+        new_password: "",
+        confirm_password: "",
+      }));
+
+      setSelectedImageFile(null);
+    } catch (err) {
+      const message =
+        err?.response?.data?.detail ||
+        err?.response?.data?.message ||
+        "Something went wrong";
+
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-10 flex h-24 w-full items-center justify-between bg-transparent px-8 text-text-main">
-      <div className="flex items-center gap-4 min-w-0">
-        {/* Mobile Menu */}
-        <button
-          onClick={onMenuClick}
-          className="rounded-md p-2 hover:bg-primary-light text-primary md:hidden"
-        >
-          <Icon icon="material-symbols:menu-rounded" width="28" />
-        </button>
-
-        {/* TITLE */}
-        <h1
-          className={`font-bold text-primary truncate ${
-            isMobile ? "text-lg max-w-50" : "text-4xl"
-          }`}
-        >
-          {title}
-        </h1>
-      </div>
-
-      {/* RIGHT SIDE */}
-      <div className="flex items-center gap-6">
-        <Link to="/notifications">
-          <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
-            <Icon
-              icon="material-symbols:notifications-outline-rounded"
-              width="24"
-            />
-            <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-          </button>
-        </Link>
-
-        <div className="relative" ref={dropdownRef}>
-          <div
-            onClick={() => setShowProfileModal(!showProfileModal)}
-            className="flex items-center gap-3 cursor-pointer group"
+    <>
+      <header className="sticky top-0 z-10 flex h-24 w-full items-center justify-between bg-transparent px-8 text-text-main">
+        {/* LEFT SIDE */}
+        <div className="flex items-center gap-4 min-w-0">
+          <button
+            onClick={onMenuClick}
+            className="rounded-md p-2 hover:bg-primary-light text-primary md:hidden"
           >
-            <div
-              className={`h-12 w-12 rounded-full border-2 border-white ring-2 ${showProfileModal ? "ring-primary" : "ring-primary-light"} overflow-hidden shadow-md group-hover:ring-primary transition-all`}
-            >
-              <img
-                src={profileData.profileImage}
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="hidden sm:flex flex-col">
-              <span className="font-bold text-primary leading-tight">
-                {profileData.name}
-              </span>
-              <span className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                Admin
-              </span>
-            </div>
-            <Icon
-              icon="material-symbols:keyboard-arrow-down-rounded"
-              className={`text-primary transition-transform duration-300 ${showProfileModal ? "rotate-180" : ""}`}
-            />
-          </div>
+            <Icon icon="material-symbols:menu-rounded" width="28" />
+          </button>
 
-          {/* Redesigned Profile Popup Dropdown */}
-          {showProfileModal && (
-            <div className="absolute right-0 mt-4 z-100 w-85 animate-in fade-in slide-in-from-top-4 duration-300">
-              <div className="bg-white rounded-4xl border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
-                {/* Header Section */}
+          <h1
+            className={`font-bold text-primary truncate ${
+              isMobile ? "text-lg max-w-50" : "text-4xl"
+            }`}
+          >
+            {title}
+          </h1>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-6">
+          <Link to="/notifications">
+            <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+              <Icon
+                icon="material-symbols:notifications-outline-rounded"
+                width="24"
+              />
+              <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+            </button>
+          </Link>
+
+          {/* PROFILE */}
+          <div className="relative" ref={dropdownRef}>
+            <div
+              onClick={() => setShowProfileModal((prev) => !prev)}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
+              {/* PROFILE IMAGE */}
+              <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-white shadow-md">
+                <img
+                  src={
+                    profileData.profile_picture ||
+                    "https://randomuser.me/api/portraits/men/32.jpg"
+                  }
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              {/* DROPDOWN ICON */}
+              <div className="flex items-center gap-1">
+
+                <Icon
+                  icon="material-symbols:keyboard-arrow-down-rounded"
+                  width="32"
+                  className={`transition-transform duration-300 ${
+                    showProfileModal
+                      ? "rotate-180 text-primary"
+                      : "text-gray-500"
+                  }`}
+                />
+                
+              </div>
+            </div>
+            {/* PROFILE MODAL */}
+            {showProfileModal && (
+              <div className="absolute right-0 mt-4 w-105 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden z-50">
+                {/* ORANGE HEADER */}
                 <div className="relative h-32 bg-primary">
-                  <div className="absolute inset-0 bg-linear-to-br from-black/10 to-transparent" />
-                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
-                    <div className="relative group">
-                      <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
+                  <button
+                    onClick={() => setShowProfileModal(false)}
+                    className="absolute top-5 right-5 bg-white/20 text-white p-3 scale-[1.4] rounded-full"
+                  >
+                    ✕
+                  </button>
+
+                  <div className="absolute -bottom-14 left-1/2 -translate-x-1/2">
+                    <div className="relative">
+                      <div className="w-35 h-35 rounded-full border-4 border-white overflow-hidden shadow-lg">
                         <img
-                          src={profileData.profileImage}
-                          alt="Profile"
+                          src={
+                            profileData.profile_picture ||
+                            "https://randomuser.me/api/portraits/men/32.jpg"
+                          }
                           className="w-full h-full object-cover"
+                          alt="Avatar"
                         />
                       </div>
+
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -177,281 +286,108 @@ export default function Header({ onMenuClick }) {
                         accept="image/*"
                         onChange={handleImageChange}
                       />
+
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute bottom-0 right-0 p-2 bg-white rounded-xl shadow-lg hover:text-primary transition-colors border border-gray-50 scale-90 group-hover:scale-100 duration-200"
+                        className="absolute bottom-2 right-2 bg-white p-2 rounded-xl shadow"
                       >
                         <Icon icon="lucide:camera" width="16" />
                       </button>
                     </div>
                   </div>
+                </div>
+
+                {/* BODY */}
+                <div className="pt-20 p-8 bg-gray-50 space-y-4">
+                  <div className="text-center">
+                    <h3 className="text-xl font-black text-primary">
+                      {/* {profileData.full_name} */}
+                      Admin
+                    </h3>
+                    <span className="text-sm font-bold tracking-widest text-primary uppercase">
+                      Admin Profile Info
+                    </span>
+                  </div>
+
+                  <FormInput
+                    label="Full Name"
+                    value={profileData.full_name}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        full_name: e.target.value,
+                      })
+                    }
+                  />
+
+                  <FormInput
+                    label="Email Address"
+                    type="email"
+                    value={profileData.email}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+
+                  <PasswordInput
+                    label="Current Password"
+                    value={profileData.old_password}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        old_password: e.target.value,
+                      })
+                    }
+                  />
+
+                  <PasswordInput
+                    label="New Password"
+                    value={profileData.new_password}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        new_password: e.target.value,
+                      })
+                    }
+                    showStrength
+                  />
+
+                  <PasswordInput
+                    label="Confirm Password"
+                    value={profileData.confirm_password}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        confirm_password: e.target.value,
+                      })
+                    }
+                  />
+
                   <button
-                    onClick={() => setShowProfileModal(false)}
-                    className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-all blur-0 backdrop-blur-md cursor-pointer"
+                    onClick={() => setShowConfirmModal(true)}
+                    className="w-full bg-primary text-white py-3 rounded-2xl font-bold shadow-lg transition cursor-pointer"
                   >
-                    <Icon icon="material-symbols:close-rounded" width="20" />
+                    Update Profile
                   </button>
                 </div>
-
-                <div className="pt-14 p-6 space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-xl font-black text-primary mb-1">
-                      {profileData.name}
-                    </h3>
-                    <div className="inline-flex items-center px-3 py-1 bg-primary-light/30 rounded-full text-[10px] font-black text-primary uppercase tracking-widest">
-                      Admin Profile Info
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* User Name */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                        Full Name
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type="text"
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold"
-                          value={profileData.name}
-                          onChange={(e) =>
-                            setProfileData({
-                              ...profileData,
-                              name: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                        Email Address
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type="email"
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold"
-                          value={profileData.email}
-                          onChange={(e) =>
-                            setProfileData({
-                              ...profileData,
-                              email: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
-
-                    {/* Password with Visibility Toggle & Strength */}
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                        Current Password
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
-                          value={profileData.password}
-                          onChange={(e) =>
-                            setProfileData({
-                              ...profileData,
-                              password: e.target.value,
-                            })
-                          }
-                        />
-
-                        <button
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-                        >
-                          <Icon
-                            icon={
-                              showPassword ? "lucide:eye-off" : "lucide:eye"
-                            }
-                            width="18"
-                          />
-                        </button>
-                      </div>
-                      {profileData.password && (
-                        <div className="flex gap-1 px-1 pt-1">
-                          {[1, 2, 3].map((lvl) => (
-                            <div
-                              key={lvl}
-                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                                strength >= lvl
-                                  ? strength === 1
-                                    ? "bg-red-400"
-                                    : strength === 2
-                                      ? "bg-orange-400"
-                                      : "bg-green-400"
-                                  : "bg-gray-100"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                        New Password
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
-                          value={profileData.password}
-                          onChange={(e) =>
-                            setProfileData({
-                              ...profileData,
-                              password: e.target.value,
-                            })
-                          }
-                        />
-
-                        <button
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-                        >
-                          <Icon
-                            icon={
-                              showPassword ? "lucide:eye-off" : "lucide:eye"
-                            }
-                            width="18"
-                          />
-                        </button>
-                      </div>
-                      {profileData.password && (
-                        <div className="flex gap-1 px-1 pt-1">
-                          {[1, 2, 3].map((lvl) => (
-                            <div
-                              key={lvl}
-                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                                strength >= lvl
-                                  ? strength === 1
-                                    ? "bg-red-400"
-                                    : strength === 2
-                                      ? "bg-orange-400"
-                                      : "bg-green-400"
-                                  : "bg-gray-100"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                        Confirm Password
-                      </label>
-                      <div className="relative group">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/10 focus:bg-white focus:border-primary/20 transition-all text-gray-700 font-bold pr-12"
-                          value={profileData.password}
-                          onChange={(e) =>
-                            setProfileData({
-                              ...profileData,
-                              password: e.target.value,
-                            })
-                          }
-                        />
-
-                        <button
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-                        >
-                          <Icon
-                            icon={
-                              showPassword ? "lucide:eye-off" : "lucide:eye"
-                            }
-                            width="18"
-                          />
-                        </button>
-                      </div>
-                      {profileData.password && (
-                        <div className="flex gap-1 px-1 pt-1">
-                          {[1, 2, 3].map((lvl) => (
-                            <div
-                              key={lvl}
-                              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                                strength >= lvl
-                                  ? strength === 1
-                                    ? "bg-red-400"
-                                    : strength === 2
-                                      ? "bg-orange-400"
-                                      : "bg-green-400"
-                                  : "bg-gray-100"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      onClick={() => setShowConfirmModal(true)}
-                      disabled={isSaving}
-                      className="w-full bg-primary text-white py-4 rounded-2xl cursor-pointer font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 group"
-                    >
-                      {isSaving ? (
-                        <Icon icon="line-md:loading-twotone-loop" width="18" />
-                      ) : (
-                        <Icon icon="lucide:check-circle" width="18" />
-                      )}
-                      {isSaving ? "Saving..." : "Update Profile"}
-                    </button>
-                  </div>
-                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Modern Confirmation Modal */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-110 flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-sm overflow-hidden shadow-2xl p-10 space-y-8 animate-in zoom-in duration-300 relative">
-            <div className="flex justify-center">
-              <div className="w-20 h-20 bg-primary-light rounded-3xl flex items-center justify-center text-primary animate-bounce">
-                <Icon icon="lucide:save" width="32" />
-              </div>
-            </div>
-            <div className="space-y-2 text-center">
-              <h3 className="text-2xl font-black text-gray-800 leading-tight">
-                Save Changes?
-              </h3>
-              <p className="text-sm text-text-muted font-bold">
-                Your profile information will be updated.
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="cursor-pointer flex-1 bg-primary text-white py-4 rounded-2xl font-black shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all disabled:opacity-50"
-              >
-                {isSaving ? "Updating..." : "Yes, Save"}
-              </button>
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="cursor-pointer flex-1 bg-gray-50 text-gray-400 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all"
-              >
-                No
-              </button>
-            </div>
+            )}
           </div>
         </div>
+      </header>
+
+      {showConfirmModal && (
+        <ConfirmModal
+          title="Save Changes?"
+          description="Your profile information will be updated."
+          onConfirm={handleSave}
+          onCancel={() => setShowConfirmModal(false)}
+          loading={isSaving}
+        />
       )}
-    </header>
+    </>
   );
 }
