@@ -212,10 +212,10 @@ export default function Header({ onMenuClick }) {
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-6">
           <Link to="/notifications">
-            <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+            <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/30">
               <Icon
                 icon="material-symbols:notifications-outline-rounded"
-                width="24"
+                width="30"
               />
               <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
             </button>
@@ -228,7 +228,7 @@ export default function Header({ onMenuClick }) {
               className="flex items-center gap-3 cursor-pointer group"
             >
               {/* PROFILE IMAGE */}
-              <div className="h-16 w-16 rounded-full overflow-hidden border-2 border-white shadow-md">
+              <div className="h-18 w-18 rounded-full overflow-hidden border-3 border-primary shadow-md">
                 <img
                   src={
                     profileData.profile_picture ||
@@ -248,7 +248,7 @@ export default function Header({ onMenuClick }) {
                   className={`transition-transform duration-300 ${
                     showProfileModal
                       ? "rotate-180 text-primary"
-                      : "text-gray-500"
+                      : "text-primary"
                   }`}
                 />
                 
@@ -261,7 +261,7 @@ export default function Header({ onMenuClick }) {
                 <div className="relative h-32 bg-primary">
                   <button
                     onClick={() => setShowProfileModal(false)}
-                    className="absolute top-5 right-5 bg-white/20 text-white p-3 scale-[1.4] rounded-full"
+                    className="absolute top-5 right-5 bg-white/20 text-white p-2 scale-[1.3] hover:scale-[1.5] transition-all rounded-full cursor-pointer"
                   >
                     ✕
                   </button>
@@ -368,7 +368,7 @@ export default function Header({ onMenuClick }) {
 
                   <button
                     onClick={() => setShowConfirmModal(true)}
-                    className="w-full bg-primary text-white py-3 rounded-2xl font-bold shadow-lg transition cursor-pointer"
+                    className="w-full bg-primary/40 hover:bg-primary text-white py-3 rounded-2xl font-bold shadow-lg transition-all cursor-pointer"
                   >
                     Update Profile
                   </button>

@@ -8,12 +8,15 @@ import { getPharmacies } from "../api/pharmaciesApi";
 
 const Pharmacies = () => {
   const [search, setSearch] = useState("");
+  const [websiteFilter, setWebsiteFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
 
   const addBtnRef = useRef(null);
   const hasFetched = useRef(false);
+
+  /* ================= FETCH ================= */
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -41,8 +44,8 @@ const Pharmacies = () => {
 
       setTotal(
         result?.total_pharmacies ||
-          result?.pharmacies?.length ||
-          0
+        result?.pharmacies?.length ||
+        0
       );
 
       toast.success("Pharmacies loaded successfully ✅", {
@@ -55,11 +58,18 @@ const Pharmacies = () => {
     }
   };
 
-  /* ================= SEARCH ================= */
+  /* ================= SEARCH + FILTER ================= */
 
-  const filteredData = data.filter((pharmacy) =>
-    pharmacy?.name?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredData = data
+    .filter((pharmacy) =>
+      pharmacy?.name?.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((pharmacy) => {
+      if (!websiteFilter) return true;
+      if (websiteFilter === "hasWebsite") return pharmacy.website;
+      if (websiteFilter === "noWebsite") return !pharmacy.website;
+      return true;
+    });
 
   /* ================= TABLE ================= */
 
@@ -87,22 +97,34 @@ const Pharmacies = () => {
 
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
+
+      {/* ================= STATS ================= */}
       <StatsCom
         title="Total Pharmacies"
-        value={total}
+        value={filteredData.length}
         icon="material-symbols:local-pharmacy-outline"
       />
 
+      {/* ================= SEARCH + FILTER ================= */}
       <SearchCom
         search={search}
         setSearch={setSearch}
+        filterValue={websiteFilter}
+        onFilterChange={setWebsiteFilter}
+        filterOptions={[
+          { label: "All", value: "" },
+          { label: "Has Website", value: "hasWebsite" },
+          { label: "No Website", value: "noWebsite" },
+        ]}
+        filterPlaceholder="Website"
         addLabel="Add pharmacy"
         buttonRef={addBtnRef}
         onAddClick={() => setOpen(true)}
-        onFilterClick={() => console.log("Filter clicked")}
       />
 
+      {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} />
+
     </div>
   );
 };

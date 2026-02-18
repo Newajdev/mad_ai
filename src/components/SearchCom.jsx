@@ -1,12 +1,14 @@
 import { Icon } from "@iconify/react";
-import GenderFilter from "../components/GenderFilter";
+import FilterDropdown from "../components/FilterDropdown";
 import ActionButton from "../components/ActionButton";
 
 export default function SearchCom({
   search,
   setSearch,
-  gender,
-  setGender,
+  filterValue,
+  onFilterChange,
+  filterOptions = [],
+  filterPlaceholder = "Filter",
   onAddClick,
   addLabel,
   buttonRef,
@@ -15,17 +17,17 @@ export default function SearchCom({
     <div className="
       bg-white
       rounded-xl
-      px-4 sm:px-6 md:px-9
-      py-5 md:py-9
+      px-6 sm:px-5 md:px-8
+      py-6 md:py-8
       flex
       flex-col
       lg:flex-row
       gap-4
       lg:items-center
       lg:justify-between
-      shadow
+      shadow border border-primary/30
     ">
-      
+
       {/* SEARCH */}
       <div className="
         flex items-center gap-2
@@ -34,7 +36,7 @@ export default function SearchCom({
         rounded-lg
         w-full
         lg:max-w-md
-        shadow
+        shadow border border-primary/40
       ">
         <Icon
           icon="material-symbols:search-rounded"
@@ -61,9 +63,15 @@ export default function SearchCom({
         lg:w-auto
         justify-start lg:justify-end
       ">
-        
-        {/* FILTER (Always visible) */}
-        <GenderFilter value={gender} onChange={setGender} />
+
+        {filterOptions.length > 0 && (
+          <FilterDropdown
+            value={filterValue}
+            onChange={onFilterChange}
+            options={filterOptions}
+            placeholder={filterPlaceholder}
+          />
+        )}
 
         {onAddClick && (
           <ActionButton

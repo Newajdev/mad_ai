@@ -14,7 +14,7 @@ export default function TableComp({ columns, data, className = "" }) {
                   key={index}
                   style={{ width: column.width }}
                   className="px-6 py-5 font-semibold text-sm whitespace-nowrap
-                  first:rounded-tl-2xl last:rounded-tr-2xl"
+                  first:rounded-tl-2xl last:rounded-tr-2xl "
                 >
                   {column.header}
                 </th>
@@ -27,13 +27,13 @@ export default function TableComp({ columns, data, className = "" }) {
               data.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className="hover:bg-gray-50/50 transition-colors"
+                  className="hover:bg-gray-50/50 transition-colors border border-primary/20"
                 >
                   {columns.map((column, colIndex) => (
                     <td
                       key={colIndex}
                       style={{ width: column.width }}
-                      className={`px-6 py-4 text-sm font-medium text-text-main truncate
+                      className={` px-6 py-4 text-sm font-medium text-text-main truncate
                         ${column.align === "center" ? "text-center" : ""}`}
                     >
                       {column.render
