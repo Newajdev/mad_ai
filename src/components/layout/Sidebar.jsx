@@ -66,7 +66,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <img
                 src="/logo.png"
                 alt="Mad AI Logo"
-                className="w-1/2 scale-[1.6] hover:opacity-90 transition"
+                className="h-10 w-10 scale-[2.5] hover:opacity-90 transition"
               />
             </Link>
           </div>
