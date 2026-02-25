@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "../api/axiosInstance"; 
+import axiosInstance from "../api/axiosInstance";
+import toast from "react-hot-toast";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+
+  /* ================= FETCH ================= */
 
   const fetchNotifications = async () => {
     try {
@@ -24,6 +28,35 @@ export default function Notifications() {
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  /* ================= DELETE ================= */
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this notification?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setDeletingId(id);
+
+      await axiosInstance.delete(
+        `/treatments/admin/system-notifications/${id}/`
+      );
+
+      setNotifications((prev) =>
+        prev.filter((item) => item.id !== id)
+      );
+
+      toast.success("Notification deleted ✅");
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error("Failed to delete notification ❌");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-10">
@@ -58,11 +91,12 @@ export default function Notifications() {
             {notifications.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2
+                className="flex justify-between items-start
                 bg-primary-light/30 hover:bg-primary-light/50
-                px-4 md:px-5 py-3 rounded-lg transition-all"
+                px-4 md:px-5 py-3 rounded-lg transition-all border border-gray-300"
               >
-                <div>
+                {/* LEFT SIDE */}
+                <div className="flex-1">
                   <p className="text-sm font-medium text-text-main">
                     {item.title}
                   </p>
@@ -71,9 +105,20 @@ export default function Notifications() {
                   </p>
                 </div>
 
-                <span className="text-xs text-text-muted whitespace-nowrap">
-                  {new Date(item.created_at).toLocaleString()}
-                </span>
+                {/* RIGHT SIDE */}
+                <div className="flex flex-col items-end gap-2 ml-4">
+                  <span className="text-xs text-text-muted whitespace-nowrap">
+                    {new Date(item.created_at).toLocaleString()}
+                  </span>
+
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    disabled={deletingId === item.id}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition disabled:opacity-50 cursor-pointer"
+                  >
+                    {deletingId === item.id ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

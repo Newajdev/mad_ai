@@ -16,8 +16,6 @@ const Pharmacies = () => {
   const addBtnRef = useRef(null);
   const hasFetched = useRef(false);
 
-  /* ================= FETCH ================= */
-
   useEffect(() => {
     if (!hasFetched.current) {
       fetchPharmacies();
@@ -58,8 +56,6 @@ const Pharmacies = () => {
     }
   };
 
-  /* ================= SEARCH + FILTER ================= */
-
   const filteredData = data
     .filter((pharmacy) =>
       pharmacy?.name?.toLowerCase().includes(search.toLowerCase())
@@ -71,13 +67,11 @@ const Pharmacies = () => {
       return true;
     });
 
-  /* ================= TABLE ================= */
-
   const columns = [
     { header: "Pharmacy name", key: "name" },
     {
       header: "Website",
-      key: "website",
+      key: "Fillter",
       render: (url) =>
         url ? (
           <a
@@ -98,14 +92,12 @@ const Pharmacies = () => {
   return (
     <div className="p-4 md:p-6 space-y-6 md:space-y-8">
 
-      {/* ================= STATS ================= */}
       <StatsCom
         title="Total Pharmacies"
         value={filteredData.length}
         icon="material-symbols:local-pharmacy-outline"
       />
 
-      {/* ================= SEARCH + FILTER ================= */}
       <SearchCom
         search={search}
         setSearch={setSearch}
@@ -117,12 +109,8 @@ const Pharmacies = () => {
           { label: "No Website", value: "noWebsite" },
         ]}
         filterPlaceholder="Website"
-        addLabel="Add pharmacy"
-        buttonRef={addBtnRef}
-        onAddClick={() => setOpen(true)}
       />
 
-      {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} />
 
     </div>

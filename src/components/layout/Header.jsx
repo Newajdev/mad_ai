@@ -191,7 +191,6 @@ export default function Header({ onMenuClick }) {
   return (
     <>
       <header className="sticky top-0 z-10 flex h-24 w-full items-center justify-between bg-transparent px-8 text-text-main">
-        {/* LEFT SIDE */}
         <div className="flex items-center gap-4 min-w-0">
           <button
             onClick={onMenuClick}
@@ -209,7 +208,6 @@ export default function Header({ onMenuClick }) {
           </h1>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-6">
           <Link to="/notifications">
             <button className="relative cursor-pointer rounded-full p-2.5 bg-primary-light text-primary hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/30">
@@ -221,14 +219,12 @@ export default function Header({ onMenuClick }) {
             </button>
           </Link>
 
-          {/* PROFILE */}
           <div className="relative" ref={dropdownRef}>
             <div
               onClick={() => setShowProfileModal((prev) => !prev)}
               className="flex items-center gap-3 cursor-pointer group"
             >
-              {/* PROFILE IMAGE */}
-              <div className="h-18 w-18 rounded-full overflow-hidden border-3 border-primary shadow-md">
+              <div className="h-16 w-16 rounded-full overflow-hidden border-3 border-primary shadow-md">
                 <img
                   src={
                     profileData.profile_picture ||
@@ -239,7 +235,6 @@ export default function Header({ onMenuClick }) {
                 />
               </div>
 
-              {/* DROPDOWN ICON */}
               <div className="flex items-center gap-1">
 
                 <Icon
@@ -254,11 +249,10 @@ export default function Header({ onMenuClick }) {
                 
               </div>
             </div>
-            {/* PROFILE MODAL */}
+
             {showProfileModal && (
-              <div className="absolute right-0 mt-4 w-105 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden z-50">
-                {/* ORANGE HEADER */}
-                <div className="relative h-32 bg-primary">
+              <div className="absolute right-0 mt-4 w-105 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden z-50 max-h-[85vh] overflow-y-auto">
+                <div className="relative h-24 bg-primary">
                   <button
                     onClick={() => setShowProfileModal(false)}
                     className="absolute top-5 right-5 bg-white/20 text-white p-2 scale-[1.3] hover:scale-[1.5] transition-all rounded-full cursor-pointer"
@@ -268,7 +262,7 @@ export default function Header({ onMenuClick }) {
 
                   <div className="absolute -bottom-14 left-1/2 -translate-x-1/2">
                     <div className="relative">
-                      <div className="w-35 h-35 rounded-full border-4 border-white overflow-hidden shadow-lg">
+                      <div className="w-30 h-30 rounded-full border-4 border-white overflow-hidden shadow-lg">
                         <img
                           src={
                             profileData.profile_picture ||
@@ -297,11 +291,9 @@ export default function Header({ onMenuClick }) {
                   </div>
                 </div>
 
-                {/* BODY */}
                 <div className="pt-20 p-8 bg-gray-50 space-y-4">
                   <div className="text-center">
                     <h3 className="text-xl font-black text-primary">
-                      {/* {profileData.full_name} */}
                       Admin
                     </h3>
                     <span className="text-sm font-bold tracking-widest text-primary uppercase">
